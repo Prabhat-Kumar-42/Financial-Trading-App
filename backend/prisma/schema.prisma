@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            Int      @id @default(autoincrement())
+  name          String
+  email         String   @unique
+  password      String
+  pan           String
+  kycDocPath    String?
+  walletBalance Float    @default(100000)
+  transactions  Transaction[]
+  watchlist     Watchlist[]
+}
+
+model Product {
+  id         Int      @id @default(autoincrement())
+  name       String
+  category   String
+  pricePerUnit Float
+  metric     String
+  transactions Transaction[]
+  watchlist   Watchlist[]
+}
+
+model Transaction {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+  units     Int
+  amount    Float
+}
+
+model Watchlist {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  product   Product  @relation(fields: [productId], references: [id])
+  productId Int
+}
