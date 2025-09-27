@@ -15,7 +15,7 @@ model User {
   password      String
   pan           String
   kycDocPath    String?
-  walletBalance Float    @default(100000)
+  walletBalance Float    @default(0)
   transactions  Transaction[]
   watchlist     Watchlist[]
 }
