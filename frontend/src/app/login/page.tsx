@@ -13,7 +13,9 @@ export default function Login() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const res = await API.post("/auth/login", form);
-    localStorage.setItem("token", res.data.token);
+    const data = res.data.data;
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.user));
     router.push("/products");
   };
 
