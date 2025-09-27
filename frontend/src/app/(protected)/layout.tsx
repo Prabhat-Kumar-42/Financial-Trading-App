@@ -3,6 +3,8 @@
 import { ReactNode, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import Sidebar from "@/components/Sidebar";
+import { WatchlistProvider } from "@/contexts/WatchlistContext";
 
 // /src/app/(protected)/layout.tsx
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
@@ -16,8 +18,19 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
   }, [token, router]);
 
   if (!token) {
-    return <div>Loading...</div>; // Optional spinner
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
 
-  return <>{children}</>;
+  return (
+    <WatchlistProvider>
+      <div className="min-h-screen flex bg-gray-50">
+        <Sidebar />
+        <main className="flex-1 p-6">{children}</main>
+      </div>
+    </WatchlistProvider>
+  );
 }
