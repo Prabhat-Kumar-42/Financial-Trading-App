@@ -27,4 +27,11 @@ export const watchlistService = {
 
     return prisma.watchlist.delete({ where: { id: existing.id } });
   },
+
+  getUserWatchlist: async function (userId: string) {
+    return prisma.watchlist.findMany({
+      where: { userId },
+      include: { product: true },
+    });
+  },
 };

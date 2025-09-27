@@ -34,3 +34,14 @@ export async function remove(req: AuthRequest, res: Response) {
     res.status(err.status || 500).json({ error: err.message });
   }
 }
+
+export async function list(req: AuthRequest, res: Response) {
+  try {
+    const userId = req.user.id;
+    const data = await watchlistService.getUserWatchlist(userId);
+    res.json(data);
+  } catch (err: any) {
+    res.status(err.status || 500).json({ error: err.message });
+  }
+}
+
