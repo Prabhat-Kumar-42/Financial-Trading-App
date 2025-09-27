@@ -13,12 +13,20 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { useWatchlist } from "@/hooks/useWatchlist";
 
+// /src/app/(protected)/products/[id]/page.tsx
 export default function ProductDetailPage() {
   const { id } = useParams();
   const { product, loading, error } = useProduct(id!);
   const { buyProduct, loading: buying, error: buyError } = useTransactions();
   const [units, setUnits] = useState(1);
+  const {
+    add,
+    remove,
+    loading: watchlistLoading,
+    error: watchlistError,
+  } = useWatchlist();
 
   if (loading) return <div>Loading product...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -41,6 +49,15 @@ export default function ProductDetailPage() {
       <p className="mb-1">Category: {product.category}</p>
       <p className="mb-1">Price: ₹{product.pricePerUnit}</p>
       <p className="mb-6">{product.metric}</p>
+
+      <button
+        className="px-4 py-2 bg-blue-600 text-white rounded mb-4"
+        onClick={() => add(product.id)}
+        disabled={watchlistLoading}
+      >
+        {watchlistLoading ? "Adding..." : "Add to Watchlist"}
+      </button>
+      {watchlistError && <p className="text-red-500">{watchlistError}</p>}
 
       <h2 className="text-xl font-semibold mb-4">Price Trend</h2>
       <div style={{ width: "100%", height: 300 }}>
