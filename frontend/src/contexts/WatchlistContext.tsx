@@ -37,7 +37,7 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     if (!token) return;
     setLoading(true);
     try {
-      const res = await API.get("/api/watchlist", {
+      const res = await API.get("/watchlist", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setWatchlist(res.data);

@@ -15,7 +15,7 @@ export function useTransactions() {
     setError(null);
     try {
       const res = await API.post(
-        `/api/transactions`,
+        `/transactions`,
         { productId, units },
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -41,7 +41,7 @@ export function usePortfolio() {
     async function fetchPortfolio() {
       setLoading(true);
       try {
-        const res = await API.get("/api/portfolio", {
+        const res = await API.get("/portfolio", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setPortfolio(res.data);
