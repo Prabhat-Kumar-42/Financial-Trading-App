@@ -17,7 +17,7 @@ export default function ProductsPage() {
         {products.map((product) => (
           <Link
             key={product.id}
-            href={`/protected/products/${product.id}`}
+            href={`/products/${product.id}`}
             className="border rounded p-4 shadow hover:shadow-lg transition"
           >
             <h2 className="text-xl font-semibold">{product.name}</h2>
