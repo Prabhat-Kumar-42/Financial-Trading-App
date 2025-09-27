@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
-
-// /src/hooks/useProducts.ts
+import API from "@/lib/api";
 
 export type Product = {
   id: string;
@@ -24,14 +23,12 @@ export function useProducts() {
 
     async function fetchProducts() {
       try {
-        const res = await fetch("/api/products", {
+        const res = await API.get<Product[]>("/products", {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (!res.ok) throw new Error("Failed to fetch products");
-        const data: Product[] = await res.json();
-        setProducts(data);
+        setProducts(res.data);
       } catch (err: any) {
-        setError(err.message);
+        setError(err.response?.data?.error || err.message);
       } finally {
         setLoading(false);
       }
