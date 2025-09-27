@@ -3,9 +3,7 @@ import { uploadKycDoc } from "@/middlewares/upload.middleware.js";
 import { Router } from "express";
 
 // /src/routes/auth.route.ts
-const router = Router();
+export const authRouter = Router();
 
-router.post("/signup", uploadKycDoc, signup);
-router.post("/login", login);
-
-export default router;
+authRouter.post("/signup", uploadKycDoc, signup);
+authRouter.post("/login", login);

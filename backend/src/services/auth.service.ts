@@ -7,6 +7,11 @@ import bcrypt from "bcrypt";
 // /src/services/auth.service.ts
 export const authService = {
   signup: async function (data: SignupData) {
+    const existingUser = await prisma.user.findUnique({
+      where: { email: data.email },
+    });
+    if (existingUser) throw new HttpError(400, "User already exists");
+
     const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const user = await prisma.user.create({

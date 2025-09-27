@@ -14,7 +14,7 @@ export const signup = async (req: SignupRequest, res: Response, next: NextFuncti
     if (kycDocPath) signupData.kycDocPath = kycDocPath;
 
     const result = await authService.signup(signupData);
-    res.status(201).json(result);
+    res.status(201).json({ success: true, data: result });
   } catch (error: any) {
     if (error.name === "ZodError") {
       return next(new HttpError(400, "Validation Error", error.errors));
@@ -27,7 +27,7 @@ export const login = async (req: SignupRequest, res: Response, next: NextFunctio
   try {
     const parsed = loginSchema.parse(req.body);
     const result = await authService.login(parsed.email, parsed.password);
-    res.json(result);
+    res.json({ success: true, data: result });
   } catch (error: any) {
     if (error.name === "ZodError") {
       return next(new HttpError(400, "Validation Error", error.errors));
