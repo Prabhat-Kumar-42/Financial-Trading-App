@@ -1,12 +1,13 @@
 "use client";
 
+import { useWatchlistContext } from "@/contexts/WatchlistContext";
 import { usePortfolio } from "@/hooks/usePortfolio";
-import { useWatchlist } from "@/hooks/useWatchlist";
+import Link from "next/link";
 
 // /src/app/(protected)/portfolio/page.tsx
 export default function PortfolioPage() {
   const { portfolio, loading, error } = usePortfolio();
-  const { add, remove, loading: watchlistLoading } = useWatchlist();
+  const { watchlist, add, remove, loading: watchlistLoading } = useWatchlistContext();
 
   if (loading) return <div>Loading portfolio...</div>;
   if (error) return <div className="text-red-500">Error: {error}</div>;
@@ -15,17 +16,14 @@ export default function PortfolioPage() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Portfolio</h1>
+
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Summary</h2>
         <p>Total Invested: ₹{portfolio.totalInvested.toFixed(2)}</p>
         <p>Current Value: ₹{portfolio.currentValue.toFixed(2)}</p>
         <p>
           Returns:{" "}
-          <span
-            className={
-              portfolio.returns >= 0 ? "text-green-600" : "text-red-600"
-            }
-          >
+          <span className={portfolio.returns >= 0 ? "text-green-600" : "text-red-600"}>
             ₹{portfolio.returns.toFixed(2)}
           </span>
         </p>
@@ -59,23 +57,26 @@ export default function PortfolioPage() {
 
       <div>
         <h2 className="text-lg font-semibold">Watchlist</h2>
-        {portfolio.watchlist.length === 0 ? (
+        {watchlist.length === 0 ? (
           <p>No products in watchlist.</p>
         ) : (
-          <ul>
-            {portfolio.watchlist.map((w) => (
-              <li key={w.id} className="mb-2 flex justify-between items-center">
-                {w.product.name} — ₹{w.product.pricePerUnit}
-                <button
-                  className="ml-4 text-red-500"
-                  onClick={() => remove(w.product.id)}
-                  disabled={watchlistLoading}
-                >
-                  {watchlistLoading ? "Removing..." : "Remove"}
-                </button>
-              </li>
-            ))}
-          </ul>
+          <>
+            <ul>
+              {watchlist.slice(0, 3).map((w) => (
+                <li key={w.id} className="mb-2 flex justify-between items-center">
+                  {w.product.name} — ₹{w.product.pricePerUnit}
+                  <button
+                    className="ml-4 text-red-500"
+                    onClick={() => remove(w.product.id)}
+                    disabled={watchlistLoading}
+                  >
+                    {watchlistLoading ? "Removing..." : "Remove"}
+                  </button>
+                </li>
+              ))}
+            </ul>
+            {watchlist.length > 3 && <Link href="/watchlist">See all</Link>}
+          </>
         )}
       </div>
     </div>
