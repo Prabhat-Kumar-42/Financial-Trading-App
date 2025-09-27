@@ -4,6 +4,7 @@ import { useState } from "react";
 import API from "@/lib/api";
 import { useAuth } from "./useAuth";
 
+// /src/hooks/useWatchList.ts
 export function useWatchlist() {
   const { token } = useAuth();
   const [loading, setLoading] = useState(false);

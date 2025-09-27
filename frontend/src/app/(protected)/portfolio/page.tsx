@@ -1,7 +1,7 @@
 "use client";
 
 import { usePortfolio } from "@/hooks/usePortfolio";
-import { useWatchlist } from "@/hooks/useWatchList";
+import { useWatchlist } from "@/hooks/useWatchlist";
 
 // /src/app/(protected)/portfolio/page.tsx
 export default function PortfolioPage() {

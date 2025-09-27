@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 import API from "@/lib/api";
 
+// /src/hooks/useProduct.ts
 export type ProductDetail = {
   id: string;
   name: string;
