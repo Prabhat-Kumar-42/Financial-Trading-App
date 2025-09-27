@@ -1,22 +1,30 @@
 "use client";
 import { useState } from "react";
-import API from "@/lib/api";
 import { useRouter } from "next/navigation";
+import API from "@/lib/api";
+import { useAuth } from "@/hooks/useAuth";
 
 // /src/app/login/page.tsx
 export default function Login() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
+  const { login } = useAuth();
 
   const handleChange = (e: any) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const res = await API.post("/auth/login", form);
-    const data = res.data.data;
-    localStorage.setItem("token", data.token);
-    localStorage.setItem("user", JSON.stringify(data.user));
-    router.push("/products");
+    try {
+      const res = await API.post("/auth/login", form);
+      // support both shapes: { token, user } or { success: true, data: { token, user } }
+      const payload = res.data?.data ?? res.data;
+      const token = payload?.token ?? payload?.accessToken;
+      const user = payload?.user ?? payload?.user;
+      if (!token) throw new Error("No token returned");
+      login(token, user ?? { id: "", name: "", email: form.email });
+    } catch (err: any) {
+      alert(err.response?.data?.error || err.message);
+    }
   };
 
   return (
