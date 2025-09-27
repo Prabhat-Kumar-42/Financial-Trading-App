@@ -1,27 +1,39 @@
 "use client";
 import { useState } from "react";
 import API from "@/lib/api";
-import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 // /src/app/signup/page.tsx
 export default function Signup() {
-  const router = useRouter();
   const [form, setForm] = useState({ name: "", email: "", password: "", pan: "" });
   const [file, setFile] = useState<File | null>(null);
+  const { login } = useAuth();
 
-  const handleChange = (e: any) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  const handleChange = (e: any) => setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
     const data = new FormData();
-    Object.entries(form).forEach(([k, v]) => data.append(k, v));
+    Object.entries(form).forEach(([k, v]) => data.append(k, v as string));
     if (file) data.append("kycDoc", file);
 
-    const res = await API.post("/auth/signup", data);
-    localStorage.setItem("token", res.data.token);
-    router.push("/products");
+    try {
+      const res = await API.post("/auth/signup", data);
+      const payload = res.data?.data ?? res.data;
+      const token = payload?.token ?? res.data?.token;
+      const user = payload?.user ?? payload?.user;
+      if (!token) {
+        // fallback if your signup response returns token differently
+        if (res.data?.token) {
+          login(res.data.token, res.data.user ?? { id: "", name: form.name, email: form.email });
+          return;
+        }
+        throw new Error("No token returned from signup");
+      }
+      login(token, user ?? { id: "", name: form.name, email: form.email });
+    } catch (err: any) {
+      alert(err.response?.data?.error || err.message);
+    }
   };
 
   return (
