@@ -20,7 +20,7 @@ export const authService = {
         email: data.email,
         password: hashedPassword,
         pan: data.pan,
-        kycDocPath: data.kycDocPath,
+        kycDocPath: data.kycDocPath ?? null,
         walletBalance: 100000, // initial wallet
       },
     });
