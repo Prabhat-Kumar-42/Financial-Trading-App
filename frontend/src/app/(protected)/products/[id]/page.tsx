@@ -2,6 +2,8 @@
 
 import { useParams } from "next/navigation";
 import { useProduct } from "@/hooks/useProduct";
+import { useState } from "react";
+import { useTransactions } from "@/hooks/useTransactions";
 import {
   LineChart,
   Line,
@@ -12,20 +14,26 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-// /src/app/(protected)/products/[id]/page.tsx
 export default function ProductDetailPage() {
   const { id } = useParams();
-  const { product, loading, error } = useProduct(id);
+  const { product, loading, error } = useProduct(id!);
+  const { buyProduct, loading: buying, error: buyError } = useTransactions();
+  const [units, setUnits] = useState(1);
 
   if (loading) return <div>Loading product...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!product) return <div>Product not found</div>;
 
-  // Dummy chart data
   const chartData = Array.from({ length: 10 }).map((_, index) => ({
     time: `Day ${index + 1}`,
     value: product.pricePerUnit + Math.random() * 100 - 50,
   }));
+
+  const handleBuy = async () => {
+    if (units < 1) return alert("Units must be at least 1");
+    const result = await buyProduct(product.id, units);
+    if (result) alert("Purchase successful!");
+  };
 
   return (
     <div className="p-6">
@@ -45,6 +53,25 @@ export default function ProductDetailPage() {
             <Line type="monotone" dataKey="value" stroke="#8884d8" />
           </LineChart>
         </ResponsiveContainer>
+      </div>
+
+      <div className="mt-6">
+        <h2 className="text-lg font-semibold">Buy Product</h2>
+        <input
+          type="number"
+          min="1"
+          value={units}
+          onChange={(e) => setUnits(Number(e.target.value))}
+          className="border p-2 mr-2"
+        />
+        <button
+          onClick={handleBuy}
+          disabled={buying}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
+          {buying ? "Buying..." : `Buy for ₹${units * product.pricePerUnit}`}
+        </button>
+        {buyError && <p className="text-red-500">{buyError}</p>}
       </div>
     </div>
   );
