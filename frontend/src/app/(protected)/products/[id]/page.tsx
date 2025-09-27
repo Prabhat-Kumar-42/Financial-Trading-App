@@ -13,7 +13,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import { useWatchlist } from "@/hooks/useWatchlist";
+import { useWatchlistContext } from "@/contexts/WatchlistContext";
 
 // /src/app/(protected)/products/[id]/page.tsx
 export default function ProductDetailPage() {
@@ -21,16 +21,14 @@ export default function ProductDetailPage() {
   const { product, loading, error } = useProduct(id!);
   const { buyProduct, loading: buying, error: buyError } = useTransactions();
   const [units, setUnits] = useState(1);
-  const {
-    add,
-    remove,
-    loading: watchlistLoading,
-    error: watchlistError,
-  } = useWatchlist();
+
+  const { add, remove, loading: watchlistLoading, error: watchlistError, watchlist } = useWatchlistContext();
 
   if (loading) return <div>Loading product...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!product) return <div>Product not found</div>;
+
+  const isInWatchlist = watchlist.some((w) => w.product.id === product.id);
 
   const chartData = Array.from({ length: 10 }).map((_, index) => ({
     time: `Day ${index + 1}`,
@@ -51,11 +49,17 @@ export default function ProductDetailPage() {
       <p className="mb-6">{product.metric}</p>
 
       <button
-        className="px-4 py-2 bg-blue-600 text-white rounded mb-4"
-        onClick={() => add(product.id)}
+        className={`px-4 py-2 rounded mb-4 ${isInWatchlist ? "bg-red-500" : "bg-blue-600"} text-white`}
+        onClick={() => (isInWatchlist ? remove(product.id) : add(product.id))}
         disabled={watchlistLoading}
       >
-        {watchlistLoading ? "Adding..." : "Add to Watchlist"}
+        {watchlistLoading
+          ? isInWatchlist
+            ? "Removing..."
+            : "Adding..."
+          : isInWatchlist
+          ? "Remove from Watchlist"
+          : "Add to Watchlist"}
       </button>
       {watchlistError && <p className="text-red-500">{watchlistError}</p>}
 
@@ -81,11 +85,7 @@ export default function ProductDetailPage() {
           onChange={(e) => setUnits(Number(e.target.value))}
           className="border p-2 mr-2"
         />
-        <button
-          onClick={handleBuy}
-          disabled={buying}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
+        <button onClick={handleBuy} disabled={buying} className="bg-blue-500 text-white p-2 rounded">
           {buying ? "Buying..." : `Buy for ₹${units * product.pricePerUnit}`}
         </button>
         {buyError && <p className="text-red-500">{buyError}</p>}
