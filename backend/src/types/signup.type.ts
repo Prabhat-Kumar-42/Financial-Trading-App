@@ -10,5 +10,5 @@ export interface SignupData {
   email: string;
   password: string;
   pan: string;
-  kycDocPath?: string;
+  kycDocPath: string | null;
 }
