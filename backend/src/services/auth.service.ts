@@ -26,7 +26,8 @@ export const authService = {
     });
 
     const token = generateToken(user.id);
-    return { user, token };
+    const { password, ...userWithoutPassword } = user;
+    return { user: userWithoutPassword, token };
   },
 
   login: async function (email: string, password: string) {
@@ -37,6 +38,7 @@ export const authService = {
     if (!isMatch) throw new HttpError(401, "Invalid credentials");
 
     const token = generateToken(user.id);
-    return { user, token };
+    const { password: pwd, ...userWithoutPassword } = user;
+    return { user: userWithoutPassword, token };
   },
 };
