@@ -16,6 +16,7 @@ export const watchlistService = {
 
     return prisma.watchlist.create({
       data: { userId, productId },
+      include: { product: true },
     });
   },
 
