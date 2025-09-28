@@ -40,7 +40,8 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
       const res = await API.get("/watchlist", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setWatchlist(res.data);
+      const payload = res.data?.data ?? res.data;
+      setWatchlist(payload);
       setError(null);
     } catch (err: any) {
       setError(err.response?.data?.error || err.message);
