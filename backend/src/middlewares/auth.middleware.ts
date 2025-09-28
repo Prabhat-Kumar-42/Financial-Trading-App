@@ -1,6 +1,7 @@
 import type { Response, NextFunction } from "express";
 import { verifyToken } from "@/utils/jwt.util.js";
 import type { AuthRequest } from "@/types/auth-request.type.js";
+import { id } from "zod/locales";
 
 // /src/middlewares/auth.middleware.ts
 export function authenticate(
@@ -20,7 +21,7 @@ export function authenticate(
 
   try {
     const decoded = verifyToken(token);
-    req.user = decoded;
+    req.user = { id: decoded.userId };
     next();
   } catch (err) {
     next(err);
