@@ -5,6 +5,20 @@
 > Frontend: **Next.js (App Router) + React + TypeScript + Tailwind CSS + Recharts**
 
 ---
+## Demo Video
+
+Watch a 3–5 minute walkthrough of the project here:
+[Demo Video](https://drive.google.com/file/d/154QDWla3ITh5mmUjCxY2fGibB4bIlywC/view)
+
+---
+## Live Deployment
+
+> **Note:** If the app is temporarily unreachable or not loading, it may be due to the backend server entering an idle state on Render. This is normal for free-tier deployments—after a period of inactivity, the server "sleeps" and will take a few moments to start again when accessed. Please wait 3–5 minutes and try again if it doesn't load immediately.
+
+- **Backend Deployment:** Render  
+- **Frontend Deployment:** Vercel  
+
+Experience the app live here: [Financial Trading App](https://financial-trading-48wbrwies-prabhat-kumar-42s-projects.vercel.app/)
 
 ## Table of Contents
 
@@ -22,10 +36,9 @@
 9. [Frontend details & integration notes](#frontend-details--integration-notes)
 10. [File uploads / KYC handling](#file-uploads--kyc-handling)
 11. [Error handling & validation](#error-handling--validation)
-12. [Screenshots](#screenshots)
-13. [Deployment notes](#deployment-notes)
-14. [Troubleshooting & tips](#troubleshooting--tips)
-15. [Contributing & License](#contributing--license)
+12. [Deployment notes](#deployment-notes)
+13. [Troubleshooting & tips](#troubleshooting--tips)
+14. [Contributing & License](#contributing--license)
 
 ---
 
@@ -512,38 +525,6 @@ curl -X POST http://localhost:4000/api/watchlist \
   -H "Content-Type: application/json" \
   -d '{"productId":"<uuid>"}'
 ```
-
----
-
-# Screenshots
-
-Create a `/screenshots` folder at the repo root and add your screenshots there. Example placeholders are listed below — replace the filenames with your actual screenshots.
-
-```md
-## Screenshots
-
-### Login
-![Login](/screenshots/login.png)
-
-### Signup (KYC)
-![Signup](/screenshots/signup.png)
-
-### Products list
-![Products](/screenshots/products.png)
-
-### Product detail (chart + buy)
-![Product Detail](/screenshots/product-detail.png)
-
-### Portfolio (summary + transactions)
-![Portfolio](/screenshots/portfolio.png)
-
-### Watchlist
-![Watchlist](/screenshots/watchlist.png)
-
-### Profile (KYC & details)
-![Profile](/screenshots/profile.png)
-```
-
 ---
 
 # Deployment notes
