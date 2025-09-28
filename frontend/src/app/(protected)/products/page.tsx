@@ -19,7 +19,7 @@ export default function ProductsPage() {
     );
   }
 
-  if (error) return <div>Error: {error}</div>;
+  if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
     <div className="p-6">
@@ -35,12 +35,12 @@ export default function ProductsPage() {
             <Link
               key={product.id}
               href={`/products/${product.id}`}
-              className="border rounded p-4 shadow hover:shadow-lg transition"
+              className="border rounded p-4 shadow hover:shadow-lg hover:scale-105 transition-transform duration-200"
             >
               <h2 className="text-xl font-semibold">{product.name}</h2>
-              <p>Category: {product.category}</p>
-              <p>Price: ₹{product.pricePerUnit}</p>
-              <p>{product.metric}</p>
+              <p className="text-gray-700">Category: {product.category}</p>
+              <p className="text-gray-700">Price: ₹{product.pricePerUnit}</p>
+              <p className="text-gray-600">{product.metric}</p>
             </Link>
           ))}
         </div>

@@ -32,6 +32,7 @@ export default function WatchlistPage() {
       </div>
     );
   }
+
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   if (!watchlist.length) {
@@ -46,43 +47,44 @@ export default function WatchlistPage() {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Watchlist</h1>
         <button
           onClick={() => setShowRemoveAll(true)}
-          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
         >
           Remove All
         </button>
       </div>
+
+      {/* Watchlist Items */}
       <ul className="space-y-3">
         {watchlist.map((w) => (
           <li
             key={w.id}
-            className="flex items-center justify-between border rounded p-3"
+            className="flex items-center justify-between border rounded p-3 hover:shadow transition-shadow"
           >
             <div>
               <Link
                 href={`/products/${w.product.id}`}
-                className="font-semibold text-lg"
+                className="font-semibold text-lg hover:underline"
               >
                 {w.product.name}
               </Link>
-              <div className="text-sm text-gray-600">
-                ₹{w.product.pricePerUnit}
-              </div>
+              <div className="text-sm text-gray-600">₹{w.product.pricePerUnit}</div>
             </div>
 
             <div className="flex items-center gap-2">
               <Link
                 href={`/products/${w.product.id}`}
-                className="px-3 py-1 border rounded"
+                className="px-3 py-1 border rounded hover:bg-gray-50 transition"
               >
                 View
               </Link>
               <button
-                className="bg-red-500 text-white px-3 py-1 rounded"
+                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
                 onClick={() => setRemoveId(w.product.id)}
               >
                 Remove
@@ -91,6 +93,7 @@ export default function WatchlistPage() {
           </li>
         ))}
       </ul>
+
       {/* Confirmation Modal */}
       <Modal
         isOpen={!!removeId}
@@ -102,7 +105,7 @@ export default function WatchlistPage() {
         cancelText="Cancel"
       />
 
-      {/* Remove all modal */}
+      {/* Remove All Modal */}
       <Modal
         isOpen={showRemoveAll}
         title="Clear Watchlist"

@@ -49,7 +49,7 @@ export default function ProductDetailPage() {
       </div>
     );
   }
-  if (error) return <div>Error: {error}</div>;
+  if (error) return <div className="text-red-500">Error: {error}</div>;
   if (!product) return <div>Product not found</div>;
 
   const isInWatchlist = watchlist.some((w) => w.product.id === product.id);
@@ -61,8 +61,7 @@ export default function ProductDetailPage() {
 
   const confirmBuy = async () => {
     setShowBuyModal(false);
-    const result = await buyProduct(product.id, units);
-    //if (result) toast.success("Purchase successful!");
+    await buyProduct(product.id, units);
   };
 
   const confirmRemoveWatchlist = () => {
@@ -72,63 +71,70 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
-      <p className="mb-1">Category: {product.category}</p>
-      <p className="mb-1">Price: ₹{product.pricePerUnit}</p>
-      <p className="mb-6">{product.metric}</p>
+    <div className="p-6 space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
+        <p className="text-gray-700 mb-1">Category: {product.category}</p>
+        <p className="text-gray-700 mb-1">Price: ₹{product.pricePerUnit}</p>
+        <p className="text-gray-600 mb-4">{product.metric}</p>
 
-      {/* Watchlist Button */}
-      {isInWatchlist ? (
-        <button
-          className="px-4 py-2 rounded mb-4 bg-red-500 text-white"
-          onClick={() => setRemoveId(product.id)}
-          disabled={watchlistLoading}
-        >
-          {watchlistLoading ? "Removing..." : "Remove from Watchlist"}
-        </button>
-      ) : (
-        <button
-          className="px-4 py-2 rounded mb-4 bg-blue-600 text-white"
-          onClick={() => add(product.id)}
-          disabled={watchlistLoading}
-        >
-          {watchlistLoading ? "Adding..." : "Add to Watchlist"}
-        </button>
-      )}
-      {watchlistError && <p className="text-red-500">{watchlistError}</p>}
+        {/* Watchlist Button */}
+        {isInWatchlist ? (
+          <button
+            className="px-4 py-2 rounded mb-4 bg-red-500 text-white hover:bg-red-600 transition"
+            onClick={() => setRemoveId(product.id)}
+            disabled={watchlistLoading}
+          >
+            {watchlistLoading ? "Removing..." : "Remove from Watchlist"}
+          </button>
+        ) : (
+          <button
+            className="px-4 py-2 rounded mb-4 bg-blue-600 text-white hover:bg-blue-700 transition"
+            onClick={() => add(product.id)}
+            disabled={watchlistLoading}
+          >
+            {watchlistLoading ? "Adding..." : "Add to Watchlist"}
+          </button>
+        )}
+        {watchlistError && <p className="text-red-500">{watchlistError}</p>}
+      </div>
 
       {/* Price Trend */}
-      <h2 className="text-xl font-semibold mb-4">Price Trend</h2>
-      <div style={{ width: "100%", height: 300 }}>
-        <ResponsiveContainer>
-          <LineChart data={Array.from({ length: 10 }).map((_, index) => ({
-            time: `Day ${index + 1}`,
-            value: product.pricePerUnit + Math.random() * 100 - 50,
-          }))}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="time" />
-            <YAxis />
-            <Tooltip />
-            <Line type="monotone" dataKey="value" stroke="#8884d8" />
-          </LineChart>
-        </ResponsiveContainer>
+      <div>
+        <h2 className="text-xl font-semibold mb-2">Price Trend</h2>
+        <div style={{ width: "100%", height: 300 }}>
+          <ResponsiveContainer>
+            <LineChart
+              data={Array.from({ length: 10 }).map((_, index) => ({
+                time: `Day ${index + 1}`,
+                value: product.pricePerUnit + Math.random() * 100 - 50,
+              }))}
+              margin={{ top: 20, right: 30, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="time" tick={{ fill: "#6b7280" }} />
+              <YAxis tick={{ fill: "#6b7280" }} />
+              <Tooltip contentStyle={{ backgroundColor: "#fff", borderRadius: 8, boxShadow: "0 2px 6px rgba(0,0,0,0.1)" }} />
+              <Line type="monotone" dataKey="value" stroke="#4f46e5" strokeWidth={2} dot={{ r: 3 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {/* Buy Section */}
-      <div className="mt-6">
+      <div className="space-y-2">
         <h2 className="text-lg font-semibold">Buy Product</h2>
         <input
           type="number"
           min="1"
           value={units}
           onChange={(e) => setUnits(Number(e.target.value))}
-          className="border p-2 mr-2"
+          className="border p-2 mr-2 rounded w-24"
         />
         <button
           onClick={handleBuy}
           disabled={buying}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition"
         >
           {buying ? "Buying..." : `Buy for ₹${units * product.pricePerUnit}`}
         </button>
