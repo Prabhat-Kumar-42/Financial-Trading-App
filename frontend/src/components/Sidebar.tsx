@@ -21,15 +21,16 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
 
   const walletBarHeight = 56; // Height in px
 
+  // Scroll handler for mobile wallet bar
   useEffect(() => {
     let lastScroll = 0;
 
     const handleScroll = () => {
       const currentScroll = window.scrollY;
       if (currentScroll > lastScroll && currentScroll > walletBarHeight) {
-        setShowWallet(false); // scrolling down hides wallet
+        setShowWallet(false);
       } else {
-        setShowWallet(true); // scrolling up shows wallet
+        setShowWallet(true);
       }
       lastScroll = currentScroll;
     };
@@ -39,7 +40,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <div className="flex">
+    <div className="flex min-h-screen overflow-x-hidden">
       {/* ===== MOBILE WALLET BAR ===== */}
       <div
         className={`md:hidden fixed top-0 left-0 right-0 bg-gray-800 text-white flex items-center justify-between px-4 py-3 shadow-md z-20 transition-transform duration-300 ${
@@ -66,11 +67,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
             aria-label="Toggle menu"
             className="p-2 rounded hover:bg-gray-700 transition"
           >
-            <svg
-              className="w-5 h-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
+            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
               <path
                 d="M3 6h14M3 10h14M3 14h14"
                 stroke="currentColor"
@@ -94,8 +91,8 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
           open ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{
-          top: `${walletBarHeight}px`, // offset below wallet bar
-          height: `calc(100vh - ${walletBarHeight}px)`, // sidebar height excluding wallet bar
+          top: `${walletBarHeight}px`,
+          height: `calc(100vh - ${walletBarHeight}px)`,
         }}
       >
         <nav className="flex flex-col p-4 gap-2 overflow-y-auto h-full">
@@ -159,10 +156,7 @@ export default function Sidebar({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* ===== PAGE CONTENT ===== */}
-      <main
-        className="flex-1 md:ml-64"
-        style={{ paddingTop: `${walletBarHeight}px` }}
-      >
+      <main className="flex-1 min-h-screen bg-gray-50" style={{ paddingTop: `${walletBarHeight}px` }}>
         {children}
       </main>
     </div>
