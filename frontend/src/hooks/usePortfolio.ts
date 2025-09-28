@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import API from "@/lib/api";
 import { useAuth } from "./useAuth";
 
@@ -35,25 +35,33 @@ export function usePortfolio() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const fetchPortfolio = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    try {
+      const res = await API.get("/portfolio", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const payload = res.data?.data ?? res.data;
+      setPortfolio(payload);
+      setError(null);
+    } catch (err: any) {
+      setError(err.response?.data?.error || err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
   useEffect(() => {
     if (!token) return;
-
-    async function fetchPortfolio() {
-      setLoading(true);
-      try {
-        const res = await API.get("/portfolio", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setPortfolio(res.data);
-      } catch (err: any) {
-        setError(err.response?.data?.error || err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchPortfolio();
-  }, [token]);
+
+    const handler = () => {
+      fetchPortfolio();
+    };
+    window.addEventListener("portfolio-updated", handler);
+    return () => window.removeEventListener("portfolio-updated", handler);
+  }, [token, fetchPortfolio]);
 
   return { portfolio, loading, error };
 }
