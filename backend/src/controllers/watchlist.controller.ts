@@ -7,6 +7,7 @@ import { watchlistSchema } from "@/validators/watchlist.validator.js";
 
 export async function add(req: AuthRequest, res: Response) {
   try {
+    if (!req.user) return res.status(401).json({ error: "Not authorized" });
     const userId = req.user.id;
     const { productId } = watchlistSchema.parse(req.body);
 
@@ -22,6 +23,7 @@ export async function add(req: AuthRequest, res: Response) {
 
 export async function remove(req: AuthRequest, res: Response) {
   try {
+    if (!req.user) return res.status(401).json({ error: "Not authorized" });
     const userId = req.user.id;
     const { productId } = watchlistSchema.parse(req.body);
 
@@ -37,6 +39,7 @@ export async function remove(req: AuthRequest, res: Response) {
 
 export async function list(req: AuthRequest, res: Response) {
   try {
+    if (!req.user) return res.status(401).json({ error: "Not authorized" });
     const userId = req.user.id;
     const data = await watchlistService.getUserWatchlist(userId);
     res.json(data);

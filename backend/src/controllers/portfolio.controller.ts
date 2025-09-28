@@ -4,6 +4,7 @@ import type { Response } from "express";
 
 // /src/controllers/portfolio.controller.ts
 export async function getPortfolio(req: AuthRequest, res: Response) {
+  if (!req.user) return res.status(401).json({ error: "Not authorized" });
   const userId = req.user.id;
 
   const transactions = await prisma.transaction.findMany({

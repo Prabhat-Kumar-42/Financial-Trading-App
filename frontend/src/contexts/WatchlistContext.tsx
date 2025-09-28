@@ -54,7 +54,7 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     try {
       await API.post(
-        "/api/watchlist",
+        "/watchlist",
         { productId },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -71,7 +71,7 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
     setLoading(true);
     try {
       await API.delete(
-        "/api/watchlist",
+        "/watchlist",
         {
           headers: { Authorization: `Bearer ${token}` },
           data: { productId },

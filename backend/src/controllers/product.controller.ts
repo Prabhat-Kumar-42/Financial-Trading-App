@@ -1,14 +1,18 @@
 import { productService } from "@/services/product.service.js";
 import { HttpError } from "@/utils/http-error.util.js";
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import { ZodError } from "zod";
 
 // /src/controllers/product.controller.ts
-export async function listProducts(req: Request, res: Response) {
+export async function listProducts(req: Request, res: Response, next: NextFunction) {
   try {
     const products = await productService.getAllProducts();
     res.json(products);
   } catch (error: any) {
-    throw new HttpError(500, "Failed to fetch products", error);
+    if (error instanceof ZodError) {
+      next(new HttpError(400, "validation error", error));
+    }
+    next(error)
   }
 }
 
@@ -26,6 +30,12 @@ export async function getProduct(req: Request, res: Response) {
 
     res.json(product);
   } catch (error: any) {
-    throw new HttpError(500, "Failed to fetch product", error);
+   if (error.name === "ZodError") {
+      return res.status(400).json({
+        error: "Validation failed",
+        details: error.errors,
+      });
+    }
+    res.status(error.status || 500).json({ error: error.message });
   }
 }
