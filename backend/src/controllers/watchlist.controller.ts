@@ -4,7 +4,6 @@ import { watchlistService } from "@/services/watchlist.service.js";
 import { watchlistSchema } from "@/validators/watchlist.validator.js";
 
 // /src/controllers/watchlist.controller.ts
-
 export async function add(req: AuthRequest, res: Response) {
   try {
     if (!req.user) return res.status(401).json({ error: "Not authorized" });

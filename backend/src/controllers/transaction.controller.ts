@@ -6,7 +6,6 @@ import { createTransactionSchema } from "@/validators/transaction.validator.js";
 import { type Response } from "express";
 
 // /src/controllers/transaction.controller.ts
-
 export async function createTransaction(req: AuthRequest, res: Response) {
   try {
     const user = req.user;

@@ -1,5 +1,6 @@
 import React from "react";
 
+// /src/components/Skeleton.tsx
 interface SkeletonProps {
   className?: string;
    style?: React.CSSProperties; 

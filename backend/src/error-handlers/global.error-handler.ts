@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 
 // /src/error-handlers/global.error-handler.ts
-
 export function globalErrorHandler(
   err: any,
   req: Request,

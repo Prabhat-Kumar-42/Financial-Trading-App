@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 
+// /src/components/Modal.tsx
 interface ModalProps {
   isOpen: boolean;
   title?: string;

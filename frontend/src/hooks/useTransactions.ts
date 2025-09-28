@@ -6,7 +6,6 @@ import { useAuth } from "./useAuth";
 import toast from "react-hot-toast";
 
 // /src/hooks/useTransactions.ts
-
 export function useTransactions() {
   const { token, updateWallet } = useAuth();
   const [loading, setLoading] = useState(false);
