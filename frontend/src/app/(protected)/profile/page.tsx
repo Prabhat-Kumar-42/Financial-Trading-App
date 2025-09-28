@@ -43,9 +43,7 @@ export default function ProfilePage() {
 
   if (!profile) {
     return (
-      <p className="p-6 text-center text-red-500">
-        Failed to load profile
-      </p>
+      <p className="p-6 text-center text-red-500">Failed to load profile</p>
     );
   }
 
@@ -56,49 +54,49 @@ export default function ProfilePage() {
         My Profile
       </h1>
       <div className="flex justify-center">
-      {/* Profile Card */}
-      <Card className="flex flex-col md:flex-row items-start gap-6 p-6 bg-white shadow-lg rounded-lg">
-        {/* KYC Document */}
-        <div className="flex-shrink-0 flex flex-col items-center text-center">
-          <h2 className="text-lg font-semibold mb-2">KYC Document</h2>
-          <img
-            src={profile.kycImageUrl}
-            alt="KYC Document"
-            className="w-48 h-48 object-cover rounded-lg border border-gray-300 shadow-sm"
-          />
-          <a
-            href={profile.kycImageUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 text-blue-600 hover:underline text-sm"
-          >
-            View / Download
-          </a>
-        </div>
+        {/* Profile Card */}
+        <Card className="flex flex-col md:flex-row items-start gap-6 p-6 bg-white shadow-lg rounded-lg">
+          {/* KYC Document */}
+          <div className="flex-shrink-0 flex flex-col items-center text-center">
+            <h2 className="text-lg font-semibold mb-2">KYC Document</h2>
+            <img
+              src={profile.kycImageUrl}
+              alt="KYC Document"
+              className="w-48 max-h-48 object-contain rounded-lg border border-gray-300 shadow-sm"
+            />
+            <a
+              href={profile.kycImageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 text-blue-600 hover:underline text-sm"
+            >
+              View / Download
+            </a>
+          </div>
 
-        {/* User Info */}
-        <div className="flex-1 space-y-4">
-          <p className="text-lg">
-            <span className="font-semibold">Name:</span> {profile.name}
-          </p>
-          <p className="text-lg">
-            <span className="font-semibold">Email:</span> {profile.email}
-          </p>
-          <p className="text-lg">
-            <span className="font-semibold">PAN:</span> {profile.pan}
-          </p>
-          <p className="text-lg">
-            <span className="font-semibold">Wallet Balance:</span>{" "}
-            <span className="text-green-600 font-medium">
-              ₹{profile.walletBalance.toLocaleString()}
-            </span>
-          </p>
-          <p className="text-lg">
-            <span className="font-semibold">Joined:</span>{" "}
-            {new Date(profile.createdAt).toLocaleDateString()}
-          </p>
-        </div>
-      </Card>
+          {/* User Info */}
+          <div className="flex-1 space-y-4">
+            <p className="text-lg">
+              <span className="font-semibold">Name:</span> {profile.name}
+            </p>
+            <p className="text-lg">
+              <span className="font-semibold">Email:</span> {profile.email}
+            </p>
+            <p className="text-lg">
+              <span className="font-semibold">PAN:</span> {profile.pan}
+            </p>
+            <p className="text-lg">
+              <span className="font-semibold">Wallet Balance:</span>{" "}
+              <span className="text-green-600 font-medium">
+                ₹{profile.walletBalance.toLocaleString()}
+              </span>
+            </p>
+            <p className="text-lg">
+              <span className="font-semibold">Joined:</span>{" "}
+              {new Date(profile.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+        </Card>
       </div>
     </div>
   );
