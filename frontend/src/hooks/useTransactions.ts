@@ -5,8 +5,9 @@ import API from "@/lib/api";
 import { useAuth } from "./useAuth";
 
 // /src/hooks/useTransactions.ts
+
 export function useTransactions() {
-  const { token } = useAuth();
+  const { token, updateWallet } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,9 +20,24 @@ export function useTransactions() {
         { productId, units },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      return res.data;
+      const payload = res.data?.data ?? res.data;
+
+      // If backend returned updatedBalance, update auth context
+      if (payload?.updatedBalance !== undefined && updateWallet) {
+        updateWallet(payload.updatedBalance);
+      }
+
+      // notify any listeners to refresh portfolio UI
+      try {
+        window.dispatchEvent(new Event("portfolio-updated"));
+      } catch (e) {
+        // ignore in non-browser env
+      }
+
+      return payload;
     } catch (err: any) {
       setError(err.response?.data?.error || err.message);
+      return null;
     } finally {
       setLoading(false);
     }
