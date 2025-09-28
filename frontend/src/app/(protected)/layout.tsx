@@ -1,29 +1,23 @@
 "use client";
 
-import { ReactNode, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/hooks/useAuth";
+import { ReactNode, useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
 import { WatchlistProvider } from "@/contexts/WatchlistContext";
+import { useSession } from "@/hooks/useSession";
 
 // /src/app/(protected)/layout.tsx
 export default function ProtectedLayout({ children }: { children: ReactNode }) {
-  const { token } = useAuth();
-  const router = useRouter();
+  const { loading, isAuthenticated } = useSession();
 
-  useEffect(() => {
-    if (!token) {
-      router.replace("/login");
-    }
-  }, [token, router]);
-
-  if (!token) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         Loading...
       </div>
     );
   }
+
+  if (!isAuthenticated) return null; // redirect handled in useSession
 
   return (
     <WatchlistProvider>

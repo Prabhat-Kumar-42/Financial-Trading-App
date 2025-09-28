@@ -2,29 +2,29 @@
 
 import {
   createContext,
+  ReactNode,
   useContext,
   useEffect,
   useState,
-  ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast/headless";
+import toast from "react-hot-toast";
 
 // /src/contexts/AuthContext.tsx
-
 type User = {
   id: string;
   name: string;
   email: string;
-  walletBalance?: number; // added
+  walletBalance?: number;
 };
 
 type AuthContextType = {
   user: User | null;
   token: string | null;
+  loading: boolean; 
   login: (token: string, user: Partial<User>) => void;
   logout: () => void;
-  updateWallet: (balance: number) => void; // new
+  updateWallet: (balance: number) => void;
 };
 
 export const AuthContext = createContext<AuthContextType | undefined>(
@@ -34,9 +34,10 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true); // new
   const router = useRouter();
 
-  // Restore session from localStorage
+  // Restore session from localStorage (client-side only)
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
@@ -48,15 +49,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem("user");
       }
     }
+    setLoading(false); // restoration done
   }, []);
 
   const login = (tokenStr: string, userData: Partial<User>) => {
-    // Accept partial user and normalise
     const normalized: User = {
       id: userData.id ?? "",
       name: userData.name ?? "",
       email: userData.email ?? "",
-      walletBalance: userData.walletBalance ?? 100000, // fallback if backend not returning it
+      walletBalance: userData.walletBalance ?? 100000,
     };
     setToken(tokenStr);
     setUser(normalized);
@@ -85,7 +86,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, updateWallet }}>
+    <AuthContext.Provider
+      value={{ user, token, loading, login, logout, updateWallet }}
+    >
       {children}
     </AuthContext.Provider>
   );
