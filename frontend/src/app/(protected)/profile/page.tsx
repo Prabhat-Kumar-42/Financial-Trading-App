@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Skeleton, SkeletonCard } from "@/components/Skeleton";
-import { Card } from "@/components/Card";
+import { SkeletonCard } from "@/components/Skeleton";
 import API from "@/lib/api";
+import { Card } from "@/components/Card";
 
-// /src/app/(protected)/profile/page.tsx
 type UserProfile = {
   id: string;
   name: string;
@@ -25,8 +24,8 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!token) return;
     API.get("/users/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      headers: { Authorization: `Bearer ${token}` },
+    })
       .then((res) => setProfile(res.data))
       .finally(() => setLoading(false));
   }, [token]);
@@ -34,45 +33,69 @@ export default function ProfilePage() {
   if (loading) {
     return (
       <div className="p-6 space-y-6 max-w-3xl mx-auto">
-        <h1 className="text-2xl font-bold">User Profile</h1>
-        <SkeletonCard />
+        <h1 className="text-3xl font-bold text-center text-gray-900">
+          My Profile
+        </h1>
         <SkeletonCard />
       </div>
     );
   }
-  console.log(profile);
+
   if (!profile) {
     return <p className="p-6 text-red-500">Failed to load profile</p>;
   }
 
   return (
-    <div className="p-6 space-y-6 max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold">User Profile</h1>
+    <div className="p-6 max-w-4xl mx-auto space-y-8">
+      {/* Page Title */}
+      <h1 className="text-3xl font-bold text-center text-gray-900">
+        My Profile
+      </h1>
+      <div className="flex justify-center">
+        {/* Profile Card */}
+        <Card className="flex flex-col md:flex-row items-center gap-6 p-6 bg-gray-50 shadow-md rounded-lg">
+          {/* KYC Image */}
+          <div className="flex-shrink-0 flex flex-col items-center">
+            <h2 className="text-lg font-semibold mb-2">KYC Document</h2>
+            <img
+              src={profile.kycImageUrl}
+              alt="KYC Document"
+              className="w-48 h-48 object-cover rounded-lg border border-gray-300 shadow-sm"
+            />
+            <a
+              href={profile.kycImageUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 text-blue-600 hover:underline text-sm"
+            >
+              View / Download
+            </a>
+          </div>
 
-      <Card className="space-y-3">
-        <p><span className="font-semibold">Name:</span> {profile.name}</p>
-        <p><span className="font-semibold">Email:</span> {profile.email}</p>
-        <p><span className="font-semibold">PAN:</span> {profile.pan}</p>
-        <p><span className="font-semibold">Wallet Balance:</span> ₹{profile.walletBalance.toLocaleString()}</p>
-        <p><span className="font-semibold">Joined:</span> {new Date(profile.createdAt).toLocaleDateString()}</p>
-      </Card>
-
-      <Card>
-        <p className="font-semibold mb-2">KYC Image</p>
-        <img
-          src={profile.kycImageUrl}
-          alt="KYC Document"
-          className="w-48 h-48 object-cover rounded-xl border"
-        />
-        <a
-          href={profile.kycImageUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block mt-2 text-blue-500 hover:underline text-sm"
-        >
-          View / Download
-        </a>
-      </Card>
+          {/* User Info */}
+          <div className="flex-1 space-y-3">
+            <p className="text-lg">
+              <span className="font-semibold">Name:</span> {profile.name}
+            </p>
+            <p className="text-lg">
+              <span className="font-semibold">Email:</span> {profile.email}
+            </p>
+            <p className="text-lg">
+              <span className="font-semibold">PAN:</span> {profile.pan}
+            </p>
+            <p className="text-lg">
+              <span className="font-semibold">Wallet Balance:</span>{" "}
+              <span className="text-green-600 font-medium">
+                ₹{profile.walletBalance.toLocaleString()}
+              </span>
+            </p>
+            <p className="text-lg">
+              <span className="font-semibold">Joined:</span>{" "}
+              {new Date(profile.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }
