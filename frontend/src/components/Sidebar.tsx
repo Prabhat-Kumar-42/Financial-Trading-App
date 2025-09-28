@@ -11,6 +11,7 @@ const navItems = [
   { name: "Products", href: "/products" },
   { name: "Portfolio", href: "/portfolio" },
   { name: "Watchlist", href: "/watchlist" },
+  { name: "Profile", href: "/profile" },
 ];
 
 export default function Sidebar() {
