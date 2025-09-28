@@ -1,15 +1,22 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import API from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 
 // /src/app/signup/page.tsx
 export default function Signup() {
-  const [form, setForm] = useState({ name: "", email: "", password: "", pan: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    pan: "",
+  });
   const [file, setFile] = useState<File | null>(null);
   const { login } = useAuth();
 
-  const handleChange = (e: any) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e: any) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -25,7 +32,10 @@ export default function Signup() {
       if (!token) {
         // fallback if your signup response returns token differently
         if (res.data?.token) {
-          login(res.data.token, res.data.user ?? { id: "", name: form.name, email: form.email });
+          login(
+            res.data.token,
+            res.data.user ?? { id: "", name: form.name, email: form.email }
+          );
           return;
         }
         throw new Error("No token returned from signup");
@@ -42,11 +52,25 @@ export default function Signup() {
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <input name="name" placeholder="Name" onChange={handleChange} />
         <input name="email" placeholder="Email" onChange={handleChange} />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+        />
         <input name="pan" placeholder="PAN Number" onChange={handleChange} />
-        <input type="file" onChange={(e) => setFile(e.target.files?.[0] || null)} />
-        <button type="submit" className="bg-blue-600 text-white p-2 rounded">Signup</button>
+        <input
+          type="file"
+          onChange={(e) => setFile(e.target.files?.[0] || null)}
+        />
+        <button type="submit" className="bg-blue-600 text-white p-2 rounded">
+          Signup
+        </button>
       </form>
+      <p className="mt-4 text-sm text-gray-600 text-center">
+        Already have an account?{" "}
+        <Link href="/login" className="text-blue-600 hover:underline">Log in here</Link>
+      </p>
     </div>
   );
 }

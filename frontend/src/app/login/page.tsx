@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import API from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
@@ -10,7 +11,8 @@ export default function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
   const { login } = useAuth();
 
-  const handleChange = (e: any) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e: any) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -32,9 +34,20 @@ export default function Login() {
       <h1 className="text-xl mb-4">Login</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-2">
         <input name="email" placeholder="Email" onChange={handleChange} />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} />
-        <button type="submit" className="bg-green-600 text-white p-2 rounded">Login</button>
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+        />
+        <button type="submit" className="bg-green-600 text-white p-2 rounded">
+          Login
+        </button>
       </form>
+      <p className="mt-4 text-sm text-gray-600 text-center">
+        Don&apos;t have an account?{" "}
+        <Link href="/signup" className="text-blue-600 hover:underline">Sign up here</Link>
+      </p>
     </div>
   );
 }
