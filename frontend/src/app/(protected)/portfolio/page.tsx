@@ -1,10 +1,17 @@
 "use client";
 
-import { Skeleton, SkeletonListItem, SkeletonRow, SkeletonText } from "@/components/Skeleton";
+import Modal from "@/components/Modal";
+import {
+  Skeleton,
+  SkeletonListItem,
+  SkeletonRow,
+  SkeletonText,
+} from "@/components/Skeleton";
 import { useWatchlistContext } from "@/contexts/WatchlistContext";
 import { useAuth } from "@/hooks/useAuth";
 import { usePortfolio } from "@/hooks/usePortfolio";
 import Link from "next/link";
+import { useState } from "react";
 
 // /src/app/(protected)/portfolio/page.tsx
 export default function PortfolioPage() {
@@ -16,6 +23,14 @@ export default function PortfolioPage() {
     remove,
     loading: watchlistLoading,
   } = useWatchlistContext();
+
+  const [removeId, setRemoveId] = useState<string | null>(null);
+
+  const confirmRemove = () => {
+    if (!removeId) return;
+    remove(removeId);
+    setRemoveId(null);
+  };
 
   if (loading) {
     return (
@@ -119,7 +134,7 @@ export default function PortfolioPage() {
                   {w.product.name} — ₹{w.product.pricePerUnit}
                   <button
                     className="ml-4 text-red-500"
-                    onClick={() => remove(w.product.id)}
+                    onClick={() => setRemoveId(w.product.id)}
                     disabled={watchlistLoading}
                   >
                     {watchlistLoading ? "Removing..." : "Remove"}
@@ -131,6 +146,17 @@ export default function PortfolioPage() {
           </>
         )}
       </div>
+
+      {/* Confirmation Modal */}
+      <Modal
+        isOpen={!!removeId}
+        title="Remove from Watchlist"
+        message="Are you sure you want to remove this product from your watchlist?"
+        onConfirm={confirmRemove}
+        onCancel={() => setRemoveId(null)}
+        confirmText="Remove"
+        cancelText="Cancel"
+      />
     </div>
   );
 }

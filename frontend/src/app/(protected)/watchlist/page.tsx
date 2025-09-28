@@ -2,10 +2,25 @@
 import Link from "next/link";
 import { useWatchlistContext } from "@/contexts/WatchlistContext";
 import { SkeletonListItem } from "@/components/Skeleton";
+import { useState } from "react";
+import Modal from "@/components/Modal";
 
 // /src/app/(protected)/watchlist/page.tsx
 export default function WatchlistPage() {
   const { watchlist, loading, error, remove } = useWatchlistContext();
+  const [removeId, setRemoveId] = useState<string | null>(null);
+  const [showRemoveAll, setShowRemoveAll] = useState(false);
+
+  const confirmRemove = () => {
+    if (!removeId) return;
+    remove(removeId);
+    setRemoveId(null);
+  };
+
+  const confirmRemoveAll = () => {
+    watchlist.forEach((w) => remove(w.product.id));
+    setShowRemoveAll(false);
+  };
 
   if (loading) {
     return (
@@ -28,7 +43,15 @@ export default function WatchlistPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Watchlist</h1>
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Watchlist</h1>
+        <button
+          onClick={() => setShowRemoveAll(true)}
+          className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
+        >
+          Remove All
+        </button>
+      </div>
       <ul className="space-y-3">
         {watchlist.map((w) => (
           <li
@@ -56,7 +79,7 @@ export default function WatchlistPage() {
               </Link>
               <button
                 className="bg-red-500 text-white px-3 py-1 rounded"
-                onClick={() => remove(w.product.id)}
+                onClick={() => setRemoveId(w.product.id)}
               >
                 Remove
               </button>
@@ -64,6 +87,27 @@ export default function WatchlistPage() {
           </li>
         ))}
       </ul>
+      {/* Confirmation Modal */}
+      <Modal
+        isOpen={!!removeId}
+        title="Remove from Watchlist"
+        message="Are you sure you want to remove this product from your watchlist?"
+        onConfirm={confirmRemove}
+        onCancel={() => setRemoveId(null)}
+        confirmText="Remove"
+        cancelText="Cancel"
+      />
+
+      {/* Remove all modal */}
+      <Modal
+        isOpen={showRemoveAll}
+        title="Clear Watchlist"
+        message="Are you sure you want to remove all products from your watchlist?"
+        onConfirm={confirmRemoveAll}
+        onCancel={() => setShowRemoveAll(false)}
+        confirmText="Remove All"
+        cancelText="Cancel"
+      />
     </div>
   );
 }

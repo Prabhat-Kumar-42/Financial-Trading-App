@@ -16,6 +16,7 @@ import {
 import { useWatchlistContext } from "@/contexts/WatchlistContext";
 import toast from "react-hot-toast";
 import { Skeleton, SkeletonChart, SkeletonText } from "@/components/Skeleton";
+import Modal from "@/components/Modal";
 
 // /src/app/(protected)/products/[id]/page.tsx
 export default function ProductDetailPage() {
@@ -23,6 +24,7 @@ export default function ProductDetailPage() {
   const { product, loading, error } = useProduct(id!);
   const { buyProduct, loading: buying, error: buyError } = useTransactions();
   const [units, setUnits] = useState(1);
+  const [showBuyModal, setShowBuyModal] = useState(false);
 
   const {
     add,
@@ -32,16 +34,18 @@ export default function ProductDetailPage() {
     watchlist,
   } = useWatchlistContext();
 
+  const [removeId, setRemoveId] = useState<string | null>(null);
+
   if (loading) {
     return (
       <div className="p-6 space-y-4">
-        <SkeletonText width="50%" height={32} /> {/* title */}
+        <SkeletonText width="50%" height={32} />
         <SkeletonText width="30%" />
         <SkeletonText width="20%" />
-        <Skeleton className="h-10 w-32" /> {/* watchlist button */}
+        <Skeleton className="h-10 w-32" />
         <SkeletonChart />
-        <SkeletonText width="25%" height={24} /> {/* Buy label */}
-        <Skeleton className="h-10 w-32" /> {/* Buy button */}
+        <SkeletonText width="25%" height={24} />
+        <Skeleton className="h-10 w-32" />
       </div>
     );
   }
@@ -50,15 +54,21 @@ export default function ProductDetailPage() {
 
   const isInWatchlist = watchlist.some((w) => w.product.id === product.id);
 
-  const chartData = Array.from({ length: 10 }).map((_, index) => ({
-    time: `Day ${index + 1}`,
-    value: product.pricePerUnit + Math.random() * 100 - 50,
-  }));
+  const handleBuy = () => {
+    if (units < 1) return toast.error("Units must be at least 1");
+    setShowBuyModal(true);
+  };
 
-  const handleBuy = async () => {
-    if (units < 1) return toast.error("Units must be at least 1"); //alert("Units must be at least 1");
+  const confirmBuy = async () => {
+    setShowBuyModal(false);
     const result = await buyProduct(product.id, units);
-    // if (result) alert("Purchase successful!"); // using toast in hook now
+    if (result) toast.success("Purchase successful!");
+  };
+
+  const confirmRemoveWatchlist = () => {
+    if (!removeId) return;
+    remove(removeId);
+    setRemoveId(null);
   };
 
   return (
@@ -68,27 +78,34 @@ export default function ProductDetailPage() {
       <p className="mb-1">Price: ₹{product.pricePerUnit}</p>
       <p className="mb-6">{product.metric}</p>
 
-      <button
-        className={`px-4 py-2 rounded mb-4 ${
-          isInWatchlist ? "bg-red-500" : "bg-blue-600"
-        } text-white`}
-        onClick={() => (isInWatchlist ? remove(product.id) : add(product.id))}
-        disabled={watchlistLoading}
-      >
-        {watchlistLoading
-          ? isInWatchlist
-            ? "Removing..."
-            : "Adding..."
-          : isInWatchlist
-          ? "Remove from Watchlist"
-          : "Add to Watchlist"}
-      </button>
+      {/* Watchlist Button */}
+      {isInWatchlist ? (
+        <button
+          className="px-4 py-2 rounded mb-4 bg-red-500 text-white"
+          onClick={() => setRemoveId(product.id)}
+          disabled={watchlistLoading}
+        >
+          {watchlistLoading ? "Removing..." : "Remove from Watchlist"}
+        </button>
+      ) : (
+        <button
+          className="px-4 py-2 rounded mb-4 bg-blue-600 text-white"
+          onClick={() => add(product.id)}
+          disabled={watchlistLoading}
+        >
+          {watchlistLoading ? "Adding..." : "Add to Watchlist"}
+        </button>
+      )}
       {watchlistError && <p className="text-red-500">{watchlistError}</p>}
 
+      {/* Price Trend */}
       <h2 className="text-xl font-semibold mb-4">Price Trend</h2>
       <div style={{ width: "100%", height: 300 }}>
         <ResponsiveContainer>
-          <LineChart data={chartData}>
+          <LineChart data={Array.from({ length: 10 }).map((_, index) => ({
+            time: `Day ${index + 1}`,
+            value: product.pricePerUnit + Math.random() * 100 - 50,
+          }))}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="time" />
             <YAxis />
@@ -98,6 +115,7 @@ export default function ProductDetailPage() {
         </ResponsiveContainer>
       </div>
 
+      {/* Buy Section */}
       <div className="mt-6">
         <h2 className="text-lg font-semibold">Buy Product</h2>
         <input
@@ -114,8 +132,32 @@ export default function ProductDetailPage() {
         >
           {buying ? "Buying..." : `Buy for ₹${units * product.pricePerUnit}`}
         </button>
-        {buyError && <p className="text-red-500">{buyError}</p>}
       </div>
+
+      {/* Confirmation Modals */}
+      <Modal
+        isOpen={showBuyModal}
+        title="Confirm Purchase"
+        message={`Are you sure you want to buy ${units} units of ${product.name} for ₹${
+          units * product.pricePerUnit
+        }?`}
+        onConfirm={confirmBuy}
+        onCancel={() => setShowBuyModal(false)}
+        confirmText="Buy"
+        cancelText="Cancel"
+      />
+
+      <Modal
+        isOpen={!!removeId}
+        title="Remove from Watchlist"
+        message="Are you sure you want to remove this product from your watchlist?"
+        onConfirm={confirmRemoveWatchlist}
+        onCancel={() => setRemoveId(null)}
+        confirmText="Remove"
+        cancelText="Cancel"
+      />
+
+      {buyError && <p className="text-red-500">{buyError}</p>}
     </div>
   );
 }
