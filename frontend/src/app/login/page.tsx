@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,11 +8,10 @@ import { useAuth } from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import { Skeleton } from "@/components/Skeleton";
 
-// /src/app/login/page.tsx
 export default function Login() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false); // NEW
+  const [loading, setLoading] = useState(false);
   const { login } = useAuth();
 
   const handleChange = (e: any) =>
@@ -19,7 +19,7 @@ export default function Login() {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    setLoading(true); // show skeleton / loading
+    setLoading(true);
     try {
       const res = await API.post("/auth/login", form);
       const payload = res.data?.data ?? res.data;
@@ -37,45 +37,60 @@ export default function Login() {
   };
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-xl mb-4">Login</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-        {loading ? (
-          <>
-            <Skeleton className="h-10 w-full mb-2" />
-            <Skeleton className="h-10 w-full mb-2" />
-            <Skeleton className="h-10 w-full" />
-          </>
-        ) : (
-          <>
-            <input
-              name="email"
-              placeholder="Email"
-              onChange={handleChange}
-              className="border p-2 rounded"
-            />
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange}
-              className="border p-2 rounded"
-            />
-            <button
-              type="submit"
-              className="bg-green-600 text-white p-2 rounded"
-            >
-              Login
-            </button>
-          </>
-        )}
-      </form>
-      <p className="mt-4 text-sm text-gray-600 text-center">
-        Don&apos;t have an account?{" "}
-        <Link href="/signup" className="text-blue-600 hover:underline font-semibold">
-          Sign up here
-        </Link>
-      </p>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-6 space-y-6">
+        {/* Page Title */}
+        <h1 className="text-2xl font-bold text-center text-gray-800">
+          Login
+        </h1>
+
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {loading ? (
+            <>
+              <Skeleton className="h-10 w-full rounded" />
+              <Skeleton className="h-10 w-full rounded" />
+              <Skeleton className="h-10 w-full rounded" />
+            </>
+          ) : (
+            <>
+              <input
+                name="email"
+                type="email"
+                placeholder="Email"
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                onChange={handleChange}
+                className="border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                required
+              />
+              <button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded font-semibold transition"
+              >
+                {loading ? "Logging in..." : "Login"}
+              </button>
+            </>
+          )}
+        </form>
+
+        {/* Sign up link */}
+        <p className="text-sm text-gray-600 text-center">
+          Don&apos;t have an account?{" "}
+          <Link
+            href="/signup"
+            className="text-blue-600 hover:underline font-semibold"
+          >
+            Sign up here
+          </Link>
+        </p>
+      </div>
     </div>
   );
 }

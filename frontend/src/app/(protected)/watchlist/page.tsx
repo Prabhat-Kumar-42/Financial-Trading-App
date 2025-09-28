@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { useWatchlistContext } from "@/contexts/WatchlistContext";
 import { SkeletonListItem } from "@/components/Skeleton";
@@ -6,11 +7,11 @@ import { useState } from "react";
 import Modal from "@/components/Modal";
 import { EmptyState } from "@/components/EmptyState";
 
-// /src/app/(protected)/watchlist/page.tsx
 export default function WatchlistPage() {
   const { watchlist, loading, error, remove } = useWatchlistContext();
   const [removeId, setRemoveId] = useState<string | null>(null);
   const [showRemoveAll, setShowRemoveAll] = useState(false);
+  const [loadingItemId, setLoadingItemId] = useState<string | null>(null);
 
   const confirmRemove = () => {
     if (!removeId) return;
@@ -23,9 +24,15 @@ export default function WatchlistPage() {
     setShowRemoveAll(false);
   };
 
+  const handleRemove = async (productId: string) => {
+    setLoadingItemId(productId);
+    await remove(productId);
+    setLoadingItemId(null);
+  };
+
   if (loading) {
     return (
-      <div className="p-6 space-y-3">
+      <div className="p-6 space-y-3 max-w-5xl mx-auto">
         {Array.from({ length: 4 }).map((_, i) => (
           <SkeletonListItem key={i} />
         ))}
@@ -33,7 +40,12 @@ export default function WatchlistPage() {
     );
   }
 
-  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (error)
+    return (
+      <div className="text-red-500 text-center p-6">
+        Error: {error}
+      </div>
+    );
 
   if (!watchlist.length) {
     return (
@@ -47,10 +59,10 @@ export default function WatchlistPage() {
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 max-w-5xl mx-auto space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Watchlist</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-800">Watchlist</h1>
         <button
           onClick={() => setShowRemoveAll(true)}
           className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
@@ -64,30 +76,34 @@ export default function WatchlistPage() {
         {watchlist.map((w) => (
           <li
             key={w.id}
-            className="flex items-center justify-between border rounded p-3 hover:shadow transition-shadow"
+            className="flex justify-between items-center border rounded-lg p-4 hover:shadow-lg transition-shadow cursor-pointer bg-gray-50"
           >
-            <div>
-              <Link
-                href={`/products/${w.product.id}`}
-                className="font-semibold text-lg hover:underline"
-              >
-                {w.product.name}
-              </Link>
-              <div className="text-sm text-gray-600">₹{w.product.pricePerUnit}</div>
-            </div>
+            <Link
+              href={`/products/${w.product.id}`}
+              className="flex-1 text-md font-medium text-gray-800 hover:text-blue-600"
+            >
+              {w.product.name}
+              <div className="text-sm text-gray-500">
+                ₹{w.product.pricePerUnit}
+              </div>
+            </Link>
 
             <div className="flex items-center gap-2">
               <Link
                 href={`/products/${w.product.id}`}
-                className="px-3 py-1 border rounded hover:bg-gray-50 transition"
+                className="px-3 py-1 border border-gray-300 rounded hover:bg-gray-50 transition text-sm"
               >
                 View
               </Link>
               <button
-                className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
-                onClick={() => setRemoveId(w.product.id)}
+                className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRemove(w.product.id);
+                }}
+                disabled={loadingItemId === w.product.id}
               >
-                Remove
+                {loadingItemId === w.product.id ? "Removing..." : "Remove"}
               </button>
             </div>
           </li>

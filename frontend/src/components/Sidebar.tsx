@@ -6,7 +6,6 @@ import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "./Skeleton";
 
-// /src/components/Sidebar.tsx
 const navItems = [
   { name: "Products", href: "/products" },
   { name: "Portfolio", href: "/portfolio" },
@@ -22,13 +21,15 @@ export default function Sidebar() {
   return (
     <>
       {/* Mobile top bar */}
-      <div className="md:hidden bg-gray-800 text-white flex items-center justify-between px-4 py-3">
+      <div className="md:hidden bg-gray-800 text-white flex items-center justify-between px-4 py-3 shadow-md">
         <div>
-          <div className="text-lg font-semibold">Financial App</div>
+          <div className="text-lg font-bold">Financial App</div>
           <div className="text-sm opacity-90">
             Wallet:{" "}
             {user ? (
-              <>₹{(user.walletBalance ?? 0).toFixed(2)}</>
+              <span className="font-semibold">
+                ₹{(user.walletBalance ?? 0).toFixed(2)}
+              </span>
             ) : (
               <Skeleton className="h-4 w-20 inline-block" />
             )}
@@ -40,8 +41,12 @@ export default function Sidebar() {
             aria-label="Toggle menu"
             className="p-2 rounded hover:bg-gray-700"
           >
-            {/* simple hamburger */}
-            <svg className="w-5 h-5" viewBox="0 0 20 20" fill="currentColor">
+            {/* Hamburger icon */}
+            <svg
+              className="w-5 h-5"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
               <path
                 d="M3 6h14M3 10h14M3 14h14"
                 stroke="currentColor"
@@ -61,14 +66,14 @@ export default function Sidebar() {
 
       {/* Mobile slide-out */}
       {open && (
-        <div className="md:hidden bg-white border-b shadow-sm">
+        <div className="md:hidden bg-white border-b shadow-lg">
           <nav className="flex flex-col p-4 gap-2">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setOpen(false)}
-                className={`p-2 rounded ${
+                className={`p-3 rounded-md transition-colors ${
                   pathname.startsWith(item.href)
                     ? "bg-gray-100 font-semibold"
                     : "hover:bg-gray-50"
@@ -82,9 +87,9 @@ export default function Sidebar() {
       )}
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex md:flex-col md:w-64 md:flex-shrink-0 bg-white border-r">
+      <aside className="hidden md:flex md:flex-col md:w-64 md:flex-shrink-0 bg-white border-r shadow-lg">
         <div className="px-6 py-6 border-b">
-          <div className="text-xl font-bold">Financial App</div>
+          <div className="text-2xl font-bold">Financial App</div>
           <div className="mt-2 text-sm text-gray-600">
             Wallet:{" "}
             {user ? (
@@ -97,12 +102,12 @@ export default function Sidebar() {
           </div>
         </div>
 
-        <nav className="p-4 flex-1">
+        <nav className="flex-1 p-4 space-y-1">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`block px-3 py-2 rounded mb-1 ${
+              className={`block px-4 py-2 rounded-md transition-colors ${
                 pathname.startsWith(item.href)
                   ? "bg-gray-100 font-semibold"
                   : "hover:bg-gray-50"
@@ -116,7 +121,7 @@ export default function Sidebar() {
         <div className="p-4 border-t">
           <button
             onClick={() => logout()}
-            className="w-full bg-red-600 text-white px-3 py-2 rounded hover:bg-red-500"
+            className="w-full bg-red-600 text-white px-3 py-2 rounded hover:bg-red-500 transition"
           >
             Logout
           </button>
