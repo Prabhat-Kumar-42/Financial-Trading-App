@@ -23,21 +23,38 @@ export const transactionService = {
         throw new HttpError(400, "Insufficient wallet balance");
       }
 
-      // update wallet
+      // Deduct wallet balance
       const updated = await tx.user.update({
         where: { id: userId },
         data: { walletBalance: user.walletBalance - amount },
       });
 
-      // create transaction
-      const trans = await tx.transaction.create({
-        data: {
-          userId,
-          productId: dto.productId,
-          units: dto.units,
-          amount,
-        },
+      // Check if a transaction already exists for this product
+      const existingTx = await tx.transaction.findFirst({
+        where: { userId, productId: dto.productId },
       });
+
+      let trans;
+      if (existingTx) {
+        // Update existing transaction
+        trans = await tx.transaction.update({
+          where: { id: existingTx.id },
+          data: {
+            units: existingTx.units + dto.units,
+            amount: existingTx.amount + amount,
+          },
+        });
+      } else {
+        // Create new transaction
+        trans = await tx.transaction.create({
+          data: {
+            userId,
+            productId: dto.productId,
+            units: dto.units,
+            amount,
+          },
+        });
+      }
 
       return [updated, trans] as const;
     });
