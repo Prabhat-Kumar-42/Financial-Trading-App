@@ -59,7 +59,7 @@ export default function Login() {
                 type="email"
                 placeholder="Email"
                 onChange={handleChange}
-                className="border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <input
@@ -67,7 +67,7 @@ export default function Login() {
                 type="password"
                 placeholder="Password"
                 onChange={handleChange}
-                className="border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="border border-gray-300 p-3 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
               <button
