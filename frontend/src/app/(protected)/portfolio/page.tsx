@@ -1,13 +1,20 @@
 "use client";
 
 import { useWatchlistContext } from "@/contexts/WatchlistContext";
+import { useAuth } from "@/hooks/useAuth";
 import { usePortfolio } from "@/hooks/usePortfolio";
 import Link from "next/link";
 
 // /src/app/(protected)/portfolio/page.tsx
 export default function PortfolioPage() {
   const { portfolio, loading, error } = usePortfolio();
-  const { watchlist, add, remove, loading: watchlistLoading } = useWatchlistContext();
+  const { user } = useAuth();
+  const {
+    watchlist,
+    add,
+    remove,
+    loading: watchlistLoading,
+  } = useWatchlistContext();
 
   if (loading) return <div>Loading portfolio...</div>;
   if (error) return <div className="text-red-500">Error: {error}</div>;
@@ -19,11 +26,21 @@ export default function PortfolioPage() {
 
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Summary</h2>
+        <p>
+          Wallet Balance:{" "}
+          <span className="font-semibold">
+            ₹{(user?.walletBalance ?? 0).toFixed(2)}
+          </span>
+        </p>
         <p>Total Invested: ₹{portfolio.totalInvested.toFixed(2)}</p>
         <p>Current Value: ₹{portfolio.currentValue.toFixed(2)}</p>
         <p>
           Returns:{" "}
-          <span className={portfolio.returns >= 0 ? "text-green-600" : "text-red-600"}>
+          <span
+            className={
+              portfolio.returns >= 0 ? "text-green-600" : "text-red-600"
+            }
+          >
             ₹{portfolio.returns.toFixed(2)}
           </span>
         </p>
@@ -63,7 +80,10 @@ export default function PortfolioPage() {
           <>
             <ul>
               {watchlist.slice(0, 3).map((w) => (
-                <li key={w.id} className="mb-2 flex justify-between items-center">
+                <li
+                  key={w.id}
+                  className="mb-2 flex justify-between items-center"
+                >
                   {w.product.name} — ₹{w.product.pricePerUnit}
                   <button
                     className="ml-4 text-red-500"
