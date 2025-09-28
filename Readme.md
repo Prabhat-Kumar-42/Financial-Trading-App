@@ -126,15 +126,6 @@ You can adapt based on your existing layout. Example:
   package.json
   next.config.js
   tailwind.config.js
-
-/screenshots
-  login.png
-  signup.png
-  products.png
-  product-detail.png
-  portfolio.png
-  watchlist.png
-  profile.png
 ```
 
 > If your repo is currently flat (both backend and frontend in the same `src`), adjust the commands below to point to the actual locations.
