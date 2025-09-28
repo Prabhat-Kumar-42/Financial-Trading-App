@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "./Skeleton";
 
@@ -13,17 +13,42 @@ const navItems = [
   { name: "Profile", href: "/profile" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "/";
   const { user, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [showWallet, setShowWallet] = useState(true);
+
+  const walletBarHeight = 56; // Height in px
+
+  useEffect(() => {
+    let lastScroll = 0;
+
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      if (currentScroll > lastScroll && currentScroll > walletBarHeight) {
+        setShowWallet(false); // scrolling down hides wallet
+      } else {
+        setShowWallet(true); // scrolling up shows wallet
+      }
+      lastScroll = currentScroll;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <>
-      {/* Mobile top bar */}
-      <div className="md:hidden bg-gray-800 text-white flex items-center justify-between px-4 py-3 shadow-md">
+    <div className="flex">
+      {/* ===== MOBILE WALLET BAR ===== */}
+      <div
+        className={`md:hidden fixed top-0 left-0 right-0 bg-gray-800 text-white flex items-center justify-between px-4 py-3 shadow-md z-20 transition-transform duration-300 ${
+          showWallet ? "translate-y-0" : "-translate-y-full"
+        }`}
+        style={{ height: walletBarHeight }}
+      >
         <div>
-          <div className="text-lg font-bold">Financial App</div>
+          <div className="text-lg font-bold tracking-wide">Financial App</div>
           <div className="text-sm opacity-90">
             Wallet:{" "}
             {user ? (
@@ -39,9 +64,8 @@ export default function Sidebar() {
           <button
             onClick={() => setOpen((s) => !s)}
             aria-label="Toggle menu"
-            className="p-2 rounded hover:bg-gray-700"
+            className="p-2 rounded hover:bg-gray-700 transition"
           >
-            {/* Hamburger icon */}
             <svg
               className="w-5 h-5"
               viewBox="0 0 20 20"
@@ -57,36 +81,42 @@ export default function Sidebar() {
           </button>
           <button
             onClick={() => logout()}
-            className="bg-red-600 px-3 py-1 rounded text-sm hover:bg-red-500"
+            className="bg-red-600 px-3 py-1 rounded text-sm hover:bg-red-500 transition"
           >
             Logout
           </button>
         </div>
       </div>
 
-      {/* Mobile slide-out */}
-      {open && (
-        <div className="md:hidden bg-white border-b shadow-lg">
-          <nav className="flex flex-col p-4 gap-2">
-            {navItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setOpen(false)}
-                className={`p-3 rounded-md transition-colors ${
-                  pathname.startsWith(item.href)
-                    ? "bg-gray-100 font-semibold"
-                    : "hover:bg-gray-50"
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
-      )}
+      {/* ===== MOBILE SIDEBAR ===== */}
+      <div
+        className={`md:hidden fixed left-0 bottom-0 w-64 bg-white border-r shadow-lg z-30 transform transition-transform duration-300 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
+        style={{
+          top: `${walletBarHeight}px`, // offset below wallet bar
+          height: `calc(100vh - ${walletBarHeight}px)`, // sidebar height excluding wallet bar
+        }}
+      >
+        <nav className="flex flex-col p-4 gap-2 overflow-y-auto h-full">
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setOpen(false)}
+              className={`p-3 rounded-md transition-colors ${
+                pathname.startsWith(item.href)
+                  ? "bg-gray-100 font-semibold"
+                  : "hover:bg-gray-50"
+              }`}
+            >
+              {item.name}
+            </Link>
+          ))}
+        </nav>
+      </div>
 
-      {/* Desktop sidebar */}
+      {/* ===== DESKTOP SIDEBAR ===== */}
       <aside className="hidden md:flex md:flex-col md:w-64 md:flex-shrink-0 bg-white border-r shadow-lg">
         <div className="px-6 py-6 border-b">
           <div className="text-2xl font-bold">Financial App</div>
@@ -127,6 +157,14 @@ export default function Sidebar() {
           </button>
         </div>
       </aside>
-    </>
+
+      {/* ===== PAGE CONTENT ===== */}
+      <main
+        className="flex-1 md:ml-64"
+        style={{ paddingTop: `${walletBarHeight}px` }}
+      >
+        {children}
+      </main>
+    </div>
   );
 }
