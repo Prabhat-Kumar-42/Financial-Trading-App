@@ -1,5 +1,6 @@
 "use client";
 
+import { Skeleton, SkeletonListItem, SkeletonRow, SkeletonText } from "@/components/Skeleton";
 import { useWatchlistContext } from "@/contexts/WatchlistContext";
 import { useAuth } from "@/hooks/useAuth";
 import { usePortfolio } from "@/hooks/usePortfolio";
@@ -16,7 +17,38 @@ export default function PortfolioPage() {
     loading: watchlistLoading,
   } = useWatchlistContext();
 
-  if (loading) return <div>Loading portfolio...</div>;
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6">
+        <h1 className="text-2xl font-bold mb-4">
+          <Skeleton className="h-8 w-1/4" />
+        </h1>
+
+        {/* Summary */}
+        <div className="space-y-2">
+          <SkeletonText width="40%" />
+          <SkeletonText width="60%" />
+          <SkeletonText width="50%" />
+          <SkeletonText width="70%" />
+        </div>
+
+        {/* Transactions */}
+        <div className="space-y-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonRow key={i} />
+          ))}
+        </div>
+
+        {/* Watchlist */}
+        <div className="space-y-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <SkeletonListItem key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (error) return <div className="text-red-500">Error: {error}</div>;
   if (!portfolio) return <div>No portfolio data</div>;
 

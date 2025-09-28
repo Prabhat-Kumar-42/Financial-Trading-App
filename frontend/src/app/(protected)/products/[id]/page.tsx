@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { useWatchlistContext } from "@/contexts/WatchlistContext";
 import toast from "react-hot-toast";
+import { Skeleton, SkeletonChart, SkeletonText } from "@/components/Skeleton";
 
 // /src/app/(protected)/products/[id]/page.tsx
 export default function ProductDetailPage() {
@@ -23,9 +24,27 @@ export default function ProductDetailPage() {
   const { buyProduct, loading: buying, error: buyError } = useTransactions();
   const [units, setUnits] = useState(1);
 
-  const { add, remove, loading: watchlistLoading, error: watchlistError, watchlist } = useWatchlistContext();
+  const {
+    add,
+    remove,
+    loading: watchlistLoading,
+    error: watchlistError,
+    watchlist,
+  } = useWatchlistContext();
 
-  if (loading) return <div>Loading product...</div>;
+  if (loading) {
+    return (
+      <div className="p-6 space-y-4">
+        <SkeletonText width="50%" height={32} /> {/* title */}
+        <SkeletonText width="30%" />
+        <SkeletonText width="20%" />
+        <Skeleton className="h-10 w-32" /> {/* watchlist button */}
+        <SkeletonChart />
+        <SkeletonText width="25%" height={24} /> {/* Buy label */}
+        <Skeleton className="h-10 w-32" /> {/* Buy button */}
+      </div>
+    );
+  }
   if (error) return <div>Error: {error}</div>;
   if (!product) return <div>Product not found</div>;
 
@@ -37,7 +56,7 @@ export default function ProductDetailPage() {
   }));
 
   const handleBuy = async () => {
-    if (units < 1) return toast.error("Units must be at least 1"); //alert("Units must be at least 1"); 
+    if (units < 1) return toast.error("Units must be at least 1"); //alert("Units must be at least 1");
     const result = await buyProduct(product.id, units);
     // if (result) alert("Purchase successful!"); // using toast in hook now
   };
@@ -50,7 +69,9 @@ export default function ProductDetailPage() {
       <p className="mb-6">{product.metric}</p>
 
       <button
-        className={`px-4 py-2 rounded mb-4 ${isInWatchlist ? "bg-red-500" : "bg-blue-600"} text-white`}
+        className={`px-4 py-2 rounded mb-4 ${
+          isInWatchlist ? "bg-red-500" : "bg-blue-600"
+        } text-white`}
         onClick={() => (isInWatchlist ? remove(product.id) : add(product.id))}
         disabled={watchlistLoading}
       >
@@ -86,7 +107,11 @@ export default function ProductDetailPage() {
           onChange={(e) => setUnits(Number(e.target.value))}
           className="border p-2 mr-2"
         />
-        <button onClick={handleBuy} disabled={buying} className="bg-blue-500 text-white p-2 rounded">
+        <button
+          onClick={handleBuy}
+          disabled={buying}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
           {buying ? "Buying..." : `Buy for ₹${units * product.pricePerUnit}`}
         </button>
         {buyError && <p className="text-red-500">{buyError}</p>}

@@ -1,5 +1,6 @@
 "use client";
 
+import { SkeletonCard } from "@/components/Skeleton";
 import { useProducts } from "@/hooks/useProducts";
 import Link from "next/link";
 
@@ -7,7 +8,16 @@ import Link from "next/link";
 export default function ProductsPage() {
   const { products, loading, error } = useProducts();
 
-  if (loading) return <div>Loading products...</div>;
+  if (loading) {
+    return (
+      <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <SkeletonCard key={i} />
+        ))}
+      </div>
+    );
+  }
+
   if (error) return <div>Error: {error}</div>;
 
   return (

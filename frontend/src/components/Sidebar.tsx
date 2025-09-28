@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { Skeleton } from "./Skeleton";
 
 // /src/components/Sidebar.tsx
 const navItems = [
@@ -23,11 +24,14 @@ export default function Sidebar() {
       <div className="md:hidden bg-gray-800 text-white flex items-center justify-between px-4 py-3">
         <div>
           <div className="text-lg font-semibold">Financial App</div>
-          {user && (
-            <div className="text-sm opacity-90">
-              Wallet: ₹{(user.walletBalance ?? 0).toFixed(2)}
-            </div>
-          )}
+          <div className="text-sm opacity-90">
+            Wallet:{" "}
+            {user ? (
+              <>₹{(user.walletBalance ?? 0).toFixed(2)}</>
+            ) : (
+              <Skeleton className="h-4 w-20 inline-block" />
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-2">
           <button
@@ -80,14 +84,16 @@ export default function Sidebar() {
       <aside className="hidden md:flex md:flex-col md:w-64 md:flex-shrink-0 bg-white border-r">
         <div className="px-6 py-6 border-b">
           <div className="text-xl font-bold">Financial App</div>
-          {user && (
-            <div className="mt-2 text-sm text-gray-600">
-              Wallet:{" "}
+          <div className="mt-2 text-sm text-gray-600">
+            Wallet:{" "}
+            {user ? (
               <span className="font-semibold">
                 ₹{(user.walletBalance ?? 0).toFixed(2)}
               </span>
-            </div>
-          )}
+            ) : (
+              <Skeleton className="h-4 w-20 inline-block" />
+            )}
+          </div>
         </div>
 
         <nav className="p-4 flex-1">
