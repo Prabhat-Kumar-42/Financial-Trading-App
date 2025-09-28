@@ -1,11 +1,17 @@
 import { z } from "zod";
 
 // /src/validators/auth.validator.ts
+const PAN_REGEX = /^[A-Z]{5}[0-9]{4}[A-Z]$/i;
 export const signupSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.email("Invalid email"),
   password: z.string().min(6, "Password must be at least 6 characters"),
-  pan: z.string().length(10, "PAN must be 10 characters"),
+  pan: z
+    .string()
+    .length(10, "PAN must be 10 characters")
+    .refine((val) => PAN_REGEX.test(val), {
+      message: "PAN format is invalid (expected format: AAAAA9999A)",
+    }),
   // file upload handled separately by multer
 });
 
