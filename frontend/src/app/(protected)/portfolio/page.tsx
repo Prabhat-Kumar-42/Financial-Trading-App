@@ -1,5 +1,6 @@
 "use client";
 
+import { EmptyState } from "@/components/EmptyState";
 import Modal from "@/components/Modal";
 import {
   Skeleton,
@@ -67,37 +68,45 @@ export default function PortfolioPage() {
   if (error) return <div className="text-red-500">Error: {error}</div>;
   if (!portfolio) return <div>No portfolio data</div>;
 
+  const hasTransactions = portfolio.transactions.length > 0;
+
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-4">Portfolio</h1>
 
-      <div className="mb-6">
-        <h2 className="text-lg font-semibold">Summary</h2>
+      {/* Summary */}
+      <div className="mb-6 p-4 border rounded shadow bg-white">
+        <h2 className="text-lg font-semibold mb-2">Summary</h2>
         <p>
           Wallet Balance:{" "}
-          <span className="font-semibold">
-            ₹{(user?.walletBalance ?? 0).toFixed(2)}
-          </span>
+          <span className="font-semibold">₹{(user?.walletBalance ?? 0).toFixed(2)}</span>
         </p>
-        <p>Total Invested: ₹{portfolio.totalInvested.toFixed(2)}</p>
-        <p>Current Value: ₹{portfolio.currentValue.toFixed(2)}</p>
-        <p>
-          Returns:{" "}
-          <span
-            className={
-              portfolio.returns >= 0 ? "text-green-600" : "text-red-600"
-            }
-          >
-            ₹{portfolio.returns.toFixed(2)}
-          </span>
-        </p>
+
+        {hasTransactions ? (
+          <>
+            <p>Total Invested: ₹{portfolio.totalInvested.toFixed(2)}</p>
+            <p>Current Value: ₹{portfolio.currentValue.toFixed(2)}</p>
+            <p>
+              Returns:{" "}
+              <span className={portfolio.returns >= 0 ? "text-green-600" : "text-red-600"}>
+                ₹{portfolio.returns.toFixed(2)}
+              </span>
+            </p>
+          </>
+        ) : (
+          <EmptyState
+            title="No Investments Yet"
+            message="Start by purchasing your first product."
+            actionLabel="Browse Products"
+            actionHref="/products"
+          />
+        )}
       </div>
 
+      {/* Transactions */}
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Transactions</h2>
-        {portfolio.transactions.length === 0 ? (
-          <p>No transactions yet.</p>
-        ) : (
+        {hasTransactions ? (
           <table className="table-auto border-collapse border border-gray-300">
             <thead>
               <tr>
@@ -116,13 +125,26 @@ export default function PortfolioPage() {
               ))}
             </tbody>
           </table>
+        ) : (
+          <EmptyState
+            title="No Transactions Yet"
+            message="Start by purchasing your first product."
+            actionLabel="Browse Products"
+            actionHref="/products"
+          />
         )}
       </div>
 
+      {/* Watchlist */}
       <div>
         <h2 className="text-lg font-semibold">Watchlist</h2>
         {watchlist.length === 0 ? (
-          <p>No products in watchlist.</p>
+          <EmptyState
+            title="Watchlist is Empty"
+            message="Start by adding products to your watchlist."
+            actionLabel="Browse Products"
+            actionHref="/products"
+          />
         ) : (
           <>
             <ul>

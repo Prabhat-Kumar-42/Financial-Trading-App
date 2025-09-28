@@ -62,7 +62,7 @@ export default function ProductDetailPage() {
   const confirmBuy = async () => {
     setShowBuyModal(false);
     const result = await buyProduct(product.id, units);
-    if (result) toast.success("Purchase successful!");
+    //if (result) toast.success("Purchase successful!");
   };
 
   const confirmRemoveWatchlist = () => {

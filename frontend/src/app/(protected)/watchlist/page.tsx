@@ -4,6 +4,7 @@ import { useWatchlistContext } from "@/contexts/WatchlistContext";
 import { SkeletonListItem } from "@/components/Skeleton";
 import { useState } from "react";
 import Modal from "@/components/Modal";
+import { EmptyState } from "@/components/EmptyState";
 
 // /src/app/(protected)/watchlist/page.tsx
 export default function WatchlistPage() {
@@ -35,9 +36,12 @@ export default function WatchlistPage() {
 
   if (!watchlist.length) {
     return (
-      <div className="p-6">
-        Your watchlist is empty. Browse <Link href="/products">products</Link>.
-      </div>
+      <EmptyState
+        title="Your Watchlist is Empty"
+        message="Browse products and add them to your watchlist."
+        actionLabel="Explore Products"
+        actionHref="/products"
+      />
     );
   }
 
