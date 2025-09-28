@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Skeleton } from "@/components/Skeleton";
+import { Skeleton, SkeletonCard } from "@/components/Skeleton";
 import { Card } from "@/components/Card";
 import API from "@/lib/api";
 
@@ -33,11 +33,10 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="p-6 space-y-4">
-        <Skeleton className="h-8 w-40" />
-        <Skeleton className="h-6 w-64" />
-        <Skeleton className="h-6 w-56" />
-        <Skeleton className="h-48 w-48 rounded-xl" />
+      <div className="p-6 space-y-6 max-w-3xl mx-auto">
+        <h1 className="text-2xl font-bold">User Profile</h1>
+        <SkeletonCard />
+        <SkeletonCard />
       </div>
     );
   }
