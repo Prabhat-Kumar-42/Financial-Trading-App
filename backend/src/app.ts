@@ -13,6 +13,9 @@ export const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Static file serving (uploads)
+app.use('/uploads', express.static('uploads'));
+
 // Routes
 app.use('/api', appRouter);
 // health check endpoint 
