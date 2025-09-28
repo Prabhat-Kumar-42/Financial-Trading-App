@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import API from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 // /src/app/login/page.tsx
 export default function Login() {
@@ -25,7 +26,8 @@ export default function Login() {
       if (!token) throw new Error("No token returned");
       login(token, user ?? { id: "", name: "", email: form.email });
     } catch (err: any) {
-      alert(err.response?.data?.error || err.message);
+      //alert(err.response?.data?.error || err.message);
+      toast.error('login failed: ' + (err.response?.data?.message || err.message));
     }
   };
 

@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import API from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 // /src/contexts/WatchlistContext.tsx
 type WatchlistItem = {
@@ -60,8 +61,10 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       await fetchWatchlist();
+      toast.success("Added to watchlist!");
     } catch (err: any) {
-      setError(err.response?.data?.error || err.message);
+      //setError(err.response?.data?.error || err.message);
+      toast.error(`Failed to add to watchlist: ${err.response?.data?.error || err.message}`);
     } finally {
       setLoading(false);
     }
@@ -79,8 +82,10 @@ export function WatchlistProvider({ children }: { children: ReactNode }) {
         }
       );
       await fetchWatchlist();
+      toast.success("Removed from watchlist!");
     } catch (err: any) {
-      setError(err.response?.data?.error || err.message);
+      // setError(err.response?.data?.error || err.message);
+      toast.error(`Failed to remove from watchlist: ${err.response?.data?.error || err.message}`);
     } finally {
       setLoading(false);
     }

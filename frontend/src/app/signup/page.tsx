@@ -3,6 +3,7 @@ import { useState } from "react";
 import Link from "next/link";
 import API from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
+import toast from "react-hot-toast";
 
 // /src/app/signup/page.tsx
 export default function Signup() {
@@ -42,7 +43,8 @@ export default function Signup() {
       }
       login(token, user ?? { id: "", name: form.name, email: form.email });
     } catch (err: any) {
-      alert(err.response?.data?.error || err.message);
+      //alert(err.response?.data?.error || err.message);
+      toast.error('signup  failed: ' + (err.response?.data?.message || err.message));
     }
   };
 

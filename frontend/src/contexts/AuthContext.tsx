@@ -8,6 +8,7 @@ import {
   ReactNode,
 } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-hot-toast/headless";
 
 // /src/contexts/AuthContext.tsx
 
@@ -61,6 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(normalized);
     localStorage.setItem("token", tokenStr);
     localStorage.setItem("user", JSON.stringify(normalized));
+    toast.success("Logged in successfully!");
     router.push("/products");
   };
 
@@ -69,6 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    toast("Logged out.");
     router.push("/login");
   };
 

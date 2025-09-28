@@ -3,6 +3,7 @@
 import { useState } from "react";
 import API from "@/lib/api";
 import { useAuth } from "./useAuth";
+import toast from "react-hot-toast";
 
 // /src/hooks/useTransactions.ts
 
@@ -33,10 +34,12 @@ export function useTransactions() {
       } catch (e) {
         // ignore in non-browser env
       }
-
+      toast.success("Purchase successful!");
       return payload;
     } catch (err: any) {
-      setError(err.response?.data?.error || err.message);
+      const message = err.response?.data?.error || err.message;
+      // setError(message);
+      toast.error(`Purchase failed: ${message}`);
       return null;
     } finally {
       setLoading(false);

@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useWatchlistContext } from "@/contexts/WatchlistContext";
+import toast from "react-hot-toast";
 
 // /src/app/(protected)/products/[id]/page.tsx
 export default function ProductDetailPage() {
@@ -36,9 +37,9 @@ export default function ProductDetailPage() {
   }));
 
   const handleBuy = async () => {
-    if (units < 1) return alert("Units must be at least 1");
+    if (units < 1) return toast.error("Units must be at least 1"); //alert("Units must be at least 1"); 
     const result = await buyProduct(product.id, units);
-    if (result) alert("Purchase successful!");
+    // if (result) alert("Purchase successful!"); // using toast in hook now
   };
 
   return (
