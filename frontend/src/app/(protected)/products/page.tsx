@@ -5,6 +5,7 @@ import { SkeletonCard } from "@/components/Skeleton";
 import { useProducts } from "@/hooks/useProducts";
 import Link from "next/link";
 
+// /src/app/(protected)/products/page.tsx
 export default function ProductsPage() {
   const { products, loading, error } = useProducts();
 

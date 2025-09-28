@@ -14,6 +14,7 @@ import { usePortfolio } from "@/hooks/usePortfolio";
 import Link from "next/link";
 import { useState } from "react";
 
+// /src/app/(protected)/portfolio/page.tsx
 export default function PortfolioPage() {
   const { portfolio, loading, error } = usePortfolio();
   const { user } = useAuth();

@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import { Skeleton } from "@/components/Skeleton";
 
+// /src/app/login/page.tsx
 export default function Login() {
   const router = useRouter();
   const [form, setForm] = useState({ email: "", password: "" });

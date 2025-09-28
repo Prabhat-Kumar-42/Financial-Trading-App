@@ -22,7 +22,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode }) {
   return (
     <WatchlistProvider>
       <div className="min-h-screen flex bg-gray-50">
-        <Sidebar />
+        <Sidebar children={null} />
         <main className="flex-1 p-6">{children}</main>
       </div>
     </WatchlistProvider>

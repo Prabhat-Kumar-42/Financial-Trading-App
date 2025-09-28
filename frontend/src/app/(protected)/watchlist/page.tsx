@@ -7,6 +7,7 @@ import { useState } from "react";
 import Modal from "@/components/Modal";
 import { EmptyState } from "@/components/EmptyState";
 
+// /src/app/(protected)/watchlist/page.tsx
 export default function WatchlistPage() {
   const { watchlist, loading, error, remove } = useWatchlistContext();
   const [removeId, setRemoveId] = useState<string | null>(null);

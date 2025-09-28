@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { Skeleton, SkeletonChart, SkeletonText } from "@/components/Skeleton";
 import Modal from "@/components/Modal";
 
+// /src/app/(protected)/products/[id]/page.tsx
 export default function ProductDetailPage() {
   const { id } = useParams();
   const { product, loading, error } = useProduct(id!);

@@ -6,6 +6,7 @@ import { SkeletonCard } from "@/components/Skeleton";
 import API from "@/lib/api";
 import { Card } from "@/components/Card";
 
+// /src/app/(protected)/profile/page.tsx
 type UserProfile = {
   id: string;
   name: string;

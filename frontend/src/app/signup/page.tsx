@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import toast from "react-hot-toast";
 import { Skeleton } from "@/components/Skeleton";
 
+// /src/app/signup/page.tsx
 export default function Signup() {
   const [form, setForm] = useState({
     name: "",

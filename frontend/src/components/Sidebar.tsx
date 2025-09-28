@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Skeleton } from "./Skeleton";
 
+// /src/components/Sidebar.tsx
 const navItems = [
   { name: "Products", href: "/products" },
   { name: "Portfolio", href: "/portfolio" },
