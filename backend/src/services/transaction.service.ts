@@ -15,29 +15,33 @@ export const transactionService = {
 
     const amount = product.pricePerUnit * dto.units;
 
-    const user = await prisma.user.findUnique({ where: { id: userId } });
-    if (!user) throw new HttpError(404, "User not found");
+    const [updatedUser, transaction] = await prisma.$transaction(async (tx) => {
+      const user = await tx.user.findUnique({ where: { id: userId } });
+      if (!user) throw new HttpError(404, "User not found");
 
-    if (user.walletBalance < amount) {
-      throw new HttpError(400, "Insufficient wallet balance");
-    }
+      if (user.walletBalance < amount) {
+        throw new HttpError(400, "Insufficient wallet balance");
+      }
 
-    // Deduct wallet balance
-    await prisma.user.update({
-      where: { id: userId },
-      data: { walletBalance: user.walletBalance - amount },
+      // update wallet
+      const updated = await tx.user.update({
+        where: { id: userId },
+        data: { walletBalance: user.walletBalance - amount },
+      });
+
+      // create transaction
+      const trans = await tx.transaction.create({
+        data: {
+          userId,
+          productId: dto.productId,
+          units: dto.units,
+          amount,
+        },
+      });
+
+      return [updated, trans] as const;
     });
 
-    // Create transaction
-    const transaction = await prisma.transaction.create({
-      data: {
-        userId,
-        productId: dto.productId,
-        units: dto.units,
-        amount,
-      },
-    });
-
-    return transaction;
+    return { transaction, updatedBalance: updatedUser.walletBalance };
   },
 };
