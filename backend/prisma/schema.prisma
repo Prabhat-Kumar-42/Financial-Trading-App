@@ -13,11 +13,13 @@ model User {
   name          String
   email         String   @unique
   password      String
-  pan           String
+  pan           String   @unique
   kycDocPath    String?
   walletBalance Float    @default(0)
   transactions  Transaction[]
   watchlist     Watchlist[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 }
 
 model Product {
@@ -28,6 +30,8 @@ model Product {
   metric     String
   transactions Transaction[]
   watchlist   Watchlist[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
 
 model Transaction {
@@ -38,6 +42,7 @@ model Transaction {
   productId String
   units     Int
   amount    Float
+  createdAt DateTime @default(now())
 }
 
 model Watchlist {
@@ -46,4 +51,5 @@ model Watchlist {
   userId    String
   product   Product  @relation(fields: [productId], references: [id])
   productId String
+  @@unique([userId, productId])
 }
