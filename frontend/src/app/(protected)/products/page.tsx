@@ -1,11 +1,10 @@
 "use client";
 
-import { EmptyState } from "@/components/EmptyState";
-import { SkeletonCard } from "@/components/Skeleton";
 import { useProducts } from "@/hooks/useProducts";
-import Link from "next/link";
+import { SkeletonCard } from "@/components/Skeleton";
+import { EmptyState } from "@/components/EmptyState";
+import { ProductCard } from "./components/ProductCard";
 
-// /src/app/(protected)/products/page.tsx
 export default function ProductsPage() {
   const { products, loading, error } = useProducts();
 
@@ -34,25 +33,7 @@ export default function ProductsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {products.map((product) => (
-            <Link
-              key={product.id}
-              href={`/products/${product.id}`}
-              className="bg-white border border-gray-200 rounded-lg p-6 shadow hover:shadow-lg hover:scale-105 transition-transform duration-200 flex flex-col justify-between"
-            >
-              <div className="space-y-2">
-                <h2 className="text-xl font-semibold text-gray-800">{product.name}</h2>
-                <p className="text-gray-600">Category: {product.category}</p>
-                <p className="text-gray-600">
-                  Price: <span className="font-semibold">₹{product.pricePerUnit}</span>
-                </p>
-                <p className="text-gray-500">{product.metric}</p>
-              </div>
-              <div className="mt-4">
-                <span className="text-blue-600 font-medium hover:underline">
-                  View Details
-                </span>
-              </div>
-            </Link>
+            <ProductCard key={product.id} product={product} />
           ))}
         </div>
       )}

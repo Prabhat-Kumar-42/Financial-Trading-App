@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode, useEffect, useState } from "react";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/Sidebar/Sidebar";
 import { WatchlistProvider } from "@/contexts/WatchlistContext";
 import { useSession } from "@/hooks/useSession";
 
